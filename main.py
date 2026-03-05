@@ -1,44 +1,23 @@
+"""
+This script manages the main game loop, importing managers from the GameManager script and utilising the manager classes. 
+Handles the main logic of the game, feeding inputs into managers. 
+"""
+
 # Imports
 import pygame
-from Classes import Sprite, Player
-
-# Game Manager Singleton
-class Game:
-    _instance = None
-    def __new__(cls): # Singleton pattern 
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-    @staticmethod 
-    def get_instance():
-        if Game._instance: return Game._instance
-        else: return Game()
-
-# Input Manager Singleton
-class InputManager:
-    _instance = None
-    def __new__(cls): # Singleton pattern 
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-
-            # Initialisation 
-            cls._instance._mouse_down = False
-        return cls._instance
-    
-    def set_mouse_down(self, input):
-        pass
-
+from GameManager import Game
+from Sprites import Player, Sprite
+from Grid_Map import Grid
 
 
 if __name__ == "__main__":
     # Initialisation and setup
     pygame.init()
     game_manager = Game()
-    input_manager = InputManager()
+    grid = Grid(15,15)
 
     # Sprite Setup
-    player = Player("Assets/placeholder.png")
-
+    player = Player("Assets/base_tile.png")
 
     # Main Game Loop
     running = True
@@ -46,18 +25,21 @@ if __name__ == "__main__":
         # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT: running = False # Closing application; breaking out of game loop
+            if event.type == pygame.MOUSEBUTTONDOWN: # Click handling
+                # Put a selection later
+                grid.build_wall(pygame.mouse.get_pos()) # Placing down walls at the mouse position
 
         # Key inputs
-            if event.type == pygame.KEYDOWN:
-                # Movement
-                x, y = player.get_pos()
-                if event.key == pygame.K_w: player.set_pos((x, y + 10))
-
+        keys = pygame.key.get_pressed()
+        # Player movement
+        if keys[pygame.K_w]: player.move((0, -player.speed))
+        if keys[pygame.K_s]: player.move((0, player.speed))
+        if keys[pygame.K_a]: player.move((-player.speed,0))
+        if keys[pygame.K_d]: player.move((player.speed,0))
         
-        # Logic handling
 
         # Sprite handling/display
-        # screen.fill((0,0,0))
+        Game.screen.fill((0,0,0))
         Sprite.display_all_sprites()
 
         # Other
