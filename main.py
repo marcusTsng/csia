@@ -38,7 +38,6 @@ if __name__ == "__main__":
         if keys[pygame.K_a]: player.move((-player.speed,0))
         if keys[pygame.K_d]: player.move((player.speed,0))
         
-
         # Sprite handling/display
         Game.screen.fill((0,0,0))
         Sprite.display_all_sprites()

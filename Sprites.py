@@ -10,6 +10,8 @@ from GameManager import Game
 class Sprite:
     SPRITES = []
     def __init__(self, position : tuple, image_path : str):
+        self._game = Game.get_instance() # For easy reference later
+
         self._position = position
         self._image = Sprite.load_image(image_path)
 
@@ -24,7 +26,7 @@ class Sprite:
         self.rect.topleft = position
 
     def move(self, position : tuple): # Shift the sprite by a tuple position
-        self._position = (self._position[0] + position[0], self._position[1] + position[1])
+        self._position = (self._position[0] + position[0] * self._game.delta_time, self._position[1] + position[1] * self._game.delta_time)
         self.rect.topleft = self._position
 
     def _display(self): # Display the sprite on the screen. Called by the display_all_sprites() static method
@@ -48,8 +50,7 @@ class Sprite:
 class Player(Sprite):
     def __init__(self):
         super().__init__((0,0), "Assets/Player/player_Idle.png")
-        self._game = Game.get_instance() # For easy reference later
-        self.speed = 1
+        self.speed = 5
 
         # For walk animations
         self._walking = False
@@ -57,8 +58,8 @@ class Player(Sprite):
         self._current_frame_i = 1
 
         # Animation loading
-        self._walk1= Sprite.load_image("Assets/Player/player_Walk1.png")
-        self._walk2= Sprite.load_image("Assets/Player/player_Walk2.png")
+        self._walk1 = Sprite.load_image("Assets/Player/player_Walk1.png")
+        self._walk2 = Sprite.load_image("Assets/Player/player_Walk2.png")
 
     def move(self, position): # For player movement
         self._walking = True
@@ -85,3 +86,10 @@ class Player(Sprite):
             else: Game.screen.blit(self._walk2, self._position)
         else:
             Game.screen.blit(self._image, self._position)
+
+
+class Enemy(Sprite):
+    def __init__(self, position):
+        super().__init__(position, "Assets/placeholder.png")
+
+        
