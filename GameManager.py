@@ -11,13 +11,13 @@ class Game:
     # Screen setup
     screen_width, screen_height = 720,720
     screen = pygame.display.set_mode((screen_width, screen_height))
-    # Map setup 
-    grid = [[[] for _ in range(5)] for _ in range(5)]
 
     # Singleton pattern 
-    def __new__(cls):
+    def __new__(cls, grid):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
+
+            cls._instance.grid = grid
         return cls._instance
     @staticmethod 
     def get_instance():

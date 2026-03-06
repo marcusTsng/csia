@@ -13,8 +13,8 @@ from Grid_Map import Grid
 if __name__ == "__main__":
     # Initialisation and setup
     pygame.init()
-    game_manager = Game()
     grid = Grid(15,15)
+    game_manager = Game(grid)
 
     # Sprite Setup
     player = Player("Assets/base_tile.png")
