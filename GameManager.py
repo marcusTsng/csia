@@ -18,7 +18,13 @@ class Game:
             cls._instance = super().__new__(cls)
 
             cls._instance.grid = grid
+            cls._instance.time = 0
+            cls._instance._og_time = pygame.time.get_ticks()
         return cls._instance
+    
+    def tick(self):
+        self.time = (pygame.time.get_ticks() - self._og_time) / 1000
+
     @staticmethod 
     def get_instance():
         if Game._instance: return Game._instance

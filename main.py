@@ -17,12 +17,13 @@ if __name__ == "__main__":
     game_manager = Game(grid)
 
     # Sprite Setup
-    player = Player("Assets/base_tile.png")
+    player = Player()
 
     # Main Game Loop
     running = True
     while running:
         # Event handling
+        game_manager.tick()
         for event in pygame.event.get():
             if event.type == pygame.QUIT: running = False # Closing application; breaking out of game loop
             if event.type == pygame.MOUSEBUTTONDOWN: # Click handling

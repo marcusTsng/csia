@@ -3,16 +3,15 @@ Handles the classes that define sprites
 """
 
 import pygame
+import time
 from GameManager import Game
 
 # General class for sprites
 class Sprite:
     SPRITES = []
-    def __init__(self, position : tuple, image_path : str, scale : float = 3):
+    def __init__(self, position : tuple, image_path : str):
         self._position = position
-        # Loading and manipulating the image - default scale up is 3
-        self._base_image = pygame.image.load(image_path)
-        self._image = pygame.transform.scale_by(self._base_image, scale)
+        self._image = Sprite.load_image(image_path)
 
         self.rect = self._image.get_rect()
         self.rect.topleft = position
@@ -39,14 +38,30 @@ class Sprite:
         for x in Sprite.SPRITES:
             x._display()
 
+    @staticmethod 
+    def load_image(image_path):
+        # For loading images. Loads image from the relative path and scales to fit the screen
+        base = pygame.image.load(image_path)
+        return pygame.transform.scale_by(base, 3)
+
 # Player sprite, inherits from Sprite
 class Player(Sprite):
-    def __init__(self, image_path):
-        super().__init__((0,0), image_path)
-        self.speed = 1
+    def __init__(self):
+        super().__init__((0,0), "Assets/Player/player_Idle.png")
         self._game = Game.get_instance() # For easy reference later
+        self.speed = 1
 
-    def move(self, position):
+        # For walk animations
+        self._walking = False
+        self._last_frame = 0 
+        self._current_frame_i = 1
+
+        # Animation loading
+        self._walk1= Sprite.load_image("Assets/Player/player_Walk1.png")
+        self._walk2= Sprite.load_image("Assets/Player/player_Walk2.png")
+
+    def move(self, position): # For player movement
+        self._walking = True
         old_pos = self._position # Stores the old position 
         
         super().move(position)
@@ -59,3 +74,14 @@ class Player(Sprite):
                 if isinstance(tile, Sprite) and self.rect.colliderect(tile.rect): 
                     self._position = old_pos # Revert to old position if a collision is detected
                     return
+                
+    def _display(self): # Overrides display to allow walk animations
+        if self._walking: # Walk animation
+            self._walking = False
+            if self._game.time - self._last_frame >= 0.1: # Every 0.1 secs
+                self._last_frame = self._game.time
+                self._current_frame_i = 1 if self._current_frame_i == 2 else 2
+            if self._current_frame_i == 1: Game.screen.blit(self._walk1, self._position)
+            else: Game.screen.blit(self._walk2, self._position)
+        else:
+            Game.screen.blit(self._image, self._position)
