@@ -19,14 +19,16 @@ class Game:
 
             cls._instance.grid = grid
             cls._instance.time = 0
+            cls._instance.clock = pygame.time.Clock()
             cls._instance._og_time = pygame.time.get_ticks() # Original tick time
-            cls.delta_time = pygame.time.get_ticks() / 1000
+            cls._instance.delta_time = cls._instance.clock.tick()
+            # cls.delta_time = pygame.time.get_ticks() / 1000
         return cls._instance
     
     def tick(self):
         self.time = (pygame.time.get_ticks() - self._og_time) / 1000
         # Delta time is time between frames, makes sure movement stays the same even in lag
-        self.delta_time = pygame.time.get_ticks() / 1000 - self.time 
+        self.delta_time = self.clock.tick(60) / 100 # 60 fps cap, divide by 100 to convert to seconds
 
     @staticmethod 
     def get_instance():

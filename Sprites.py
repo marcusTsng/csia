@@ -50,7 +50,7 @@ class Sprite:
 class Player(Sprite):
     def __init__(self):
         super().__init__((0,0), "Assets/Player/player_Idle.png")
-        self.speed = 5
+        self.speed = 20
 
         # For walk animations
         self._walking = False
