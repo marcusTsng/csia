@@ -3,6 +3,7 @@ Map code - defines functions for the map grid, walls, placement, etc.
 """
 
 from Sprites import Sprite
+from GameManager import Game
 
 # Full representation of the map as a grid - divided into individual tiles
 class Grid:
@@ -17,7 +18,11 @@ class Grid:
             self.destroy(x,y)
         else: # Creates a tile at the coordinate generated above
             tile = Sprite((x * 48, y * 48), "Assets/base_tile.png")
-            self.grid[x][y] = tile
+            if tile.rect.colliderect(Game.get_instance().player.rect): 
+                # Destroy the tile if touching the player. Prevents placement of tiles over the player.
+                tile.destroy()
+            else:
+                self.grid[x][y] = tile
 
     def destroy(self, x, y): # Deletes a tile from the grid
         self.grid[x][y].destroy()

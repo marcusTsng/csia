@@ -7,17 +7,28 @@ Handles the main logic of the game, feeding inputs into managers.
 import pygame
 from GameManager import Game
 from Sprites import Player, Sprite
+from UI import TextOverlay
 from Grid_Map import Grid
 
+# Constants
+GRID_SIZE = 15
 
 if __name__ == "__main__":
     # Initialisation and setup
     pygame.init()
-    grid = Grid(15,15)
+    pygame.display.set_caption("Computer Science IA: Pathfinding Game")
+
+    grid = Grid(GRID_SIZE,GRID_SIZE)
     game_manager = Game(grid)
 
     # Sprite Setup
     player = Player()
+    timer_ui = TextOverlay(
+        (game_manager.screen_width / 2, 50), 
+        "0", 
+        50, 
+        (255,255,255)
+    )
 
     # Main Game Loop
     running = True
@@ -37,9 +48,10 @@ if __name__ == "__main__":
         if keys[pygame.K_s]: player.move((0, player.speed))
         if keys[pygame.K_a]: player.move((-player.speed,0))
         if keys[pygame.K_d]: player.move((player.speed,0))
-        
+
         # Sprite handling/display
         Game.screen.fill((0,0,0))
+        timer_ui.set_text(str(game_manager.in_game_timer))
         Sprite.display_all_sprites()
 
         # Other

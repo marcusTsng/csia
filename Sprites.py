@@ -3,22 +3,30 @@ Handles the classes that define sprites
 """
 
 import pygame
-import time
 from GameManager import Game
+
+# Constants
+PLAYER_SPEED = 20
 
 # General class for sprites
 class Sprite:
     SPRITES = []
-    def __init__(self, position : tuple, image_path : str):
+    OVERLAYS = []
+    def __init__(self, position : tuple, image_path : str = None, overlay=False):
         self._game = Game.get_instance() # For easy reference later
 
         self._position = position
-        self._image = Sprite.load_image(image_path)
 
-        self.rect = self._image.get_rect()
-        self.rect.topleft = position
+        if image_path: 
+            self._image = Sprite.load_image(image_path)
 
-        Sprite.SPRITES.append(self)
+            self.rect = self._image.get_rect()
+            self.rect.topleft = position
+
+        # Seperate sprites into regular sprites and overlays
+        # This allows them to be rendered seperately and ensure correct layering
+        if not overlay: Sprite.SPRITES.append(self) 
+        else: Sprite.OVERLAYS.append(self)
     
     def get_pos(self): return self._position[0], self._position[1]
     def set_pos(self, position : tuple): 
@@ -39,6 +47,9 @@ class Sprite:
     def display_all_sprites():
         for x in Sprite.SPRITES:
             x._display()
+        # Render overlays after sprites to ensure they are overlayed
+        for x in Sprite.OVERLAYS: 
+            x._display()
 
     @staticmethod 
     def load_image(image_path):
@@ -50,7 +61,7 @@ class Sprite:
 class Player(Sprite):
     def __init__(self):
         super().__init__((0,0), "Assets/Player/player_Idle.png")
-        self.speed = 20
+        self.speed = PLAYER_SPEED
 
         # For walk animations
         self._walking = False
@@ -60,6 +71,10 @@ class Player(Sprite):
         # Animation loading
         self._walk1 = Sprite.load_image("Assets/Player/player_Walk1.png")
         self._walk2 = Sprite.load_image("Assets/Player/player_Walk2.png")
+
+        # Adding to game
+        self._game = Game.get_instance()
+        self._game.player = self
 
     def move(self, position): # For player movement
         self._walking = True
@@ -91,5 +106,3 @@ class Player(Sprite):
 class Enemy(Sprite):
     def __init__(self, position):
         super().__init__(position, "Assets/placeholder.png")
-
-        
