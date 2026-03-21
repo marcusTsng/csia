@@ -27,3 +27,8 @@ class Grid:
     def destroy(self, x, y): # Deletes a tile from the grid
         self.grid[x][y].destroy()
         self.grid[x][y] = None
+
+
+class NavigationQueue:
+    def __init__(self):
+        points = []

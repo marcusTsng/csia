@@ -1,8 +1,9 @@
 """
-Handles the classes that define sprites
+Handles the classes that define sprites and entities
 """
 
 import pygame
+import random 
 from GameManager import Game
 
 # Constants
@@ -104,5 +105,42 @@ class Player(Sprite):
 
 
 class Enemy(Sprite):
+    ENEMIES = []
+
     def __init__(self, position):
-        super().__init__(position, "Assets/placeholder.png")
+        super().__init__(position, "Assets/base_tile.png")
+        Enemy.ENEMIES.append(self)
+        self.target_pos = Game.get_instance().player._position
+        self._speed = 10
+
+    def move(self):  # Shift the enemy slightly towards the target position, and update the target if necessary
+        if not self.target_pos: return
+
+        # Gets the position difference
+        dx, dy = self.target_pos[0] - self._position[0], self.target_pos[1] - self._position[1]
+
+        # Normalises the vector
+        shift = pygame.math.Vector2(dx, dy).normalize() * self._speed
+        # shift = (dx * self._speed, dy * self._speed)
+        super().move(shift)
+
+        self.target_pos = Game.get_instance().player._position
+
+    @staticmethod
+    def spawn_enemy():
+        # Selecting a random position on a random edge of the map
+        edge = random.randint(1,4) 
+        if edge == 1: pos = (random.randint(0, Game.screen_width - 48),0)
+        elif edge == 2: pos = (random.randint(0, Game.screen_width - 48),Game.screen_width - 48)
+        elif edge == 3: pos = (0, random.randint(0, Game.screen_height - 48))
+        else: pos = (Game.screen_height - 48,random.randint(0, Game.screen_height - 48))
+
+        # Creating an enemy
+        enemy = Enemy(pos)
+
+        # Handling stuff with the enemy
+        return enemy
+    
+    @staticmethod 
+    def move_enemies():
+        for x in Enemy.ENEMIES: x.move()

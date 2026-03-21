@@ -6,7 +6,7 @@ Handles the main logic of the game, feeding inputs into managers.
 # Imports
 import pygame
 from GameManager import Game
-from Sprites import Player, Sprite
+from Sprites import Player, Sprite, Enemy
 from UI import TextOverlay
 from Grid_Map import Grid
 
@@ -30,6 +30,9 @@ if __name__ == "__main__":
         (255,255,255)
     )
 
+    # TESTING, REMOVE LATER!!!
+    for _ in range(5): Enemy.spawn_enemy()
+
     # Main Game Loop
     running = True
     while running:
@@ -51,6 +54,7 @@ if __name__ == "__main__":
 
         # Sprite handling/display
         Game.screen.fill((0,0,0))
+        Enemy.move_enemies()
         timer_ui.set_text(str(game_manager.in_game_timer))
         Sprite.display_all_sprites()
 

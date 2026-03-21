@@ -6,7 +6,7 @@ These are singletons to ensure the usage of only a single object.
 import pygame
 
 # Constants
-TIME_BETWEEN_WAVES = 60
+TIME_BETWEEN_WAVES = 5
 
 # Game Manager Singleton
 class Game:
@@ -53,7 +53,7 @@ class Game:
         self.in_game_timer = TIME_BETWEEN_WAVES - int(self.time)
         if self.in_game_timer <= 0:
             self.in_game_timer = TIME_BETWEEN_WAVES
-            self._start_time = pygame.time.get_ticks()
+            self._start_time = self.time
 
     @staticmethod 
     def get_instance():
