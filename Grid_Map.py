@@ -1,14 +1,23 @@
 """
 Map code - defines functions for the map grid, walls, placement, etc.
+Also manages navigation and pathfinding
 """
 
 from Sprites import Sprite
 from GameManager import Game
 
+import random
+
 # Full representation of the map as a grid - divided into individual tiles
 class Grid:
     def __init__(self, width, height):
         self.grid = [[None for _ in range(width)] for _ in range(height)]
+        self.width = width
+        self.height = height
+
+    def get_random_tile(self):
+        # Outputs a random tile on the grid, ie used for enemy placement/randomised spawning
+        return self.grid[random.randint(0,self.height)][random.randint(0,self.width)]
 
     def build_wall(self, pos : tuple):
         # Gets a position and converts it to an empty coordinate on the grid
@@ -29,6 +38,9 @@ class Grid:
         self.grid[x][y] = None
 
 
+"""
+Pathfinding using the A* algorithm
+"""
 class NavigationQueue:
     def __init__(self):
         points = []

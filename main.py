@@ -39,7 +39,8 @@ if __name__ == "__main__":
         # Event handling
         game_manager.tick()
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: running = False # Closing application; breaking out of game loop
+            if event.type == pygame.QUIT: 
+                running = False # Closing application; breaking out of game loop
             if event.type == pygame.MOUSEBUTTONDOWN: # Click handling
                 # Put a selection later
                 grid.build_wall(pygame.mouse.get_pos()) # Placing down walls at the mouse position

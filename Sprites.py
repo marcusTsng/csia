@@ -127,7 +127,12 @@ class Enemy(Sprite):
         self.target_pos = Game.get_instance().player._position
 
     @staticmethod
-    def spawn_enemy():
+    def spawn_enemy(): 
+        """
+        SHOULD BE UPDATED TO SPAWN ON AN ACTUAL TILE
+        """
+
+
         # Selecting a random position on a random edge of the map
         edge = random.randint(1,4) 
         if edge == 1: pos = (random.randint(0, Game.screen_width - 48),0)
