@@ -93,6 +93,9 @@ class Player(Sprite):
                     self._position = old_pos # Revert to old position if a collision is detected
                     return
                 
+        # Update navigators
+        Navigator.update_all_navs()
+                
     def _display(self): # Overrides display to allow walk animations
         if self._walking: # Walk animation
             self._walking = False
@@ -111,29 +114,29 @@ class Enemy(Sprite):
     def __init__(self, position):
         super().__init__(position, "Assets/base_tile.png")
         Enemy.ENEMIES.append(self)
-        self.target_pos = None
         self._speed = 10
 
         # A* Pathfinding setup
         self._navigator = Navigator() 
 
     def move(self):  # Shift the enemy slightly towards the target position, and update the target if necessary
-        if not self.target_pos: 
-            self.target_pos = self._navigator.dequeue()
+        targ = self._navigator.front()
 
         # Gets the position difference
-        dx, dy = self.target_pos[0] - self._position[0], self.target_pos[1] - self._position[1]
+        dx, dy = targ[0] - self._position[0], targ[1] - self._position[1]
 
         # If close enough to the target, go to the next target
         if abs(dx) < 1 and abs(dy) < 1: 
-            self.target_pos = self._navigator.dequeue()
+            self._navigator.dequeue()
         
         # Otherwise, move towards the current target
         else:
             shift = pygame.math.Vector2(dx, dy).normalize() * self._speed # Normalises the vector
             super().move(shift)
-        
-        # self.target_pos = Game.get_instance().player._position
+
+    def destroy(self):
+        self._navigator._destroy()
+        return super().destroy()
 
     @staticmethod
     def spawn_enemy(): 

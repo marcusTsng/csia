@@ -34,6 +34,9 @@ class Grid:
             else:
                 self.grid[x][y] = tile
 
+        # Update navigators
+        Navigator.update_all_navs()
+
     def destroy(self, x, y): # Deletes a tile from the grid
         self.grid[x][y].destroy()
         self.grid[x][y] = None
