@@ -3,6 +3,8 @@ This script manages the main game loop, importing managers from the GameManager 
 Handles the main logic of the game, feeding inputs into managers. 
 """
 
+GRID_SIZE = 15
+
 # Imports
 import pygame
 from GameManager import Game
@@ -10,19 +12,18 @@ from Sprites import Player, Sprite, Enemy
 from UI import TextOverlay
 from Grid_Map import Grid
 
-# Constants
-GRID_SIZE = 15
-
 if __name__ == "__main__":
     # Initialisation and setup
     pygame.init()
     pygame.display.set_caption("Computer Science IA: Pathfinding Game")
 
-    grid = Grid(GRID_SIZE,GRID_SIZE)
-    game_manager = Game(grid)
+    game_manager = Game()
+    grid = Grid(game_manager, GRID_SIZE,GRID_SIZE)
+    player = Player(game_manager)
 
-    # Sprite Setup
-    player = Player()
+    game_manager.grid = grid
+    game_manager.player = player
+
     timer_ui = TextOverlay(
         (game_manager.screen_width / 2, 50), 
         "0", 

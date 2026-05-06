@@ -5,6 +5,7 @@ Handles the classes that define sprites and entities
 import pygame
 import random 
 from GameManager import Game
+from Navigator import Navigator
 
 # Constants
 PLAYER_SPEED = 20
@@ -60,7 +61,7 @@ class Sprite:
 
 # Player sprite, inherits from Sprite
 class Player(Sprite):
-    def __init__(self):
+    def __init__(self, game_manager):
         super().__init__((0,0), "Assets/Player/player_Idle.png")
         self.speed = PLAYER_SPEED
 
@@ -74,7 +75,7 @@ class Player(Sprite):
         self._walk2 = Sprite.load_image("Assets/Player/player_Walk2.png")
 
         # Adding to game
-        self._game = Game.get_instance()
+        self._game = game_manager
         self._game.player = self
 
     def move(self, position): # For player movement
@@ -110,21 +111,29 @@ class Enemy(Sprite):
     def __init__(self, position):
         super().__init__(position, "Assets/base_tile.png")
         Enemy.ENEMIES.append(self)
-        self.target_pos = Game.get_instance().player._position
+        self.target_pos = None
         self._speed = 10
 
+        # A* Pathfinding setup
+        self._navigator = Navigator() 
+
     def move(self):  # Shift the enemy slightly towards the target position, and update the target if necessary
-        if not self.target_pos: return
+        if not self.target_pos: 
+            self.target_pos = self._navigator.dequeue()
 
         # Gets the position difference
         dx, dy = self.target_pos[0] - self._position[0], self.target_pos[1] - self._position[1]
 
-        # Normalises the vector
-        shift = pygame.math.Vector2(dx, dy).normalize() * self._speed
-        # shift = (dx * self._speed, dy * self._speed)
-        super().move(shift)
-
-        self.target_pos = Game.get_instance().player._position
+        # If close enough to the target, go to the next target
+        if abs(dx) < 1 and abs(dy) < 1: 
+            self.target_pos = self._navigator.dequeue()
+        
+        # Otherwise, move towards the current target
+        else:
+            shift = pygame.math.Vector2(dx, dy).normalize() * self._speed # Normalises the vector
+            super().move(shift)
+        
+        # self.target_pos = Game.get_instance().player._position
 
     @staticmethod
     def spawn_enemy(): 

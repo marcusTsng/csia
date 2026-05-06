@@ -18,18 +18,19 @@ class Game:
     screen = pygame.display.set_mode((screen_width, screen_height))
 
     # Singleton pattern 
-    def __new__(cls, grid):
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
     
-    def __init__(self, grid):
+    # Constructor
+    def __init__(self):
         if self._initialized: return # Ensures initialisation happens only once, for singleton
         self._initialized = True
 
         # Initialisation
         self.time = 0
-        self.grid = grid
+        self.grid = None
         self.player = None
 
         self.clock = pygame.time.Clock()
@@ -38,6 +39,11 @@ class Game:
         self.in_game_timer = TIME_BETWEEN_WAVES
         self._last_second = 0 # For checking every second
     
+    # Accessors/Mutators
+    def get_player(self): return self.player
+    def get_grid(self): return self.grid
+
+    # Runs every frame
     def tick(self):
         self.time = (pygame.time.get_ticks() - self._start_time) / 1000
         # Delta time is time between frames, makes sure movement stays the same even in lag
@@ -48,14 +54,17 @@ class Game:
             self._last_second = self.time
             self.every_second()
 
-    def every_second(self): # Runs every second, called by tick()
+    # Runs every second, called by tick()
+    def every_second(self): 
         # Handling the in-game timer
         self.in_game_timer = TIME_BETWEEN_WAVES - int(self.time)
         if self.in_game_timer <= 0:
             self.in_game_timer = TIME_BETWEEN_WAVES
             self._start_time = self.time
 
+    # Part of singleton pattern; allows the Game instance to be accessed easily
     @staticmethod 
     def get_instance():
         if Game._instance: return Game._instance
-        else: return Game()
+        else: 
+            return Game()
