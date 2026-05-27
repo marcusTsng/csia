@@ -7,6 +7,7 @@ import pygame
 
 # Constants
 TIME_BETWEEN_WAVES = 5
+TIME_DURING_WAVES = 30
 
 # Game Manager Singleton
 class Game:
@@ -29,15 +30,23 @@ class Game:
         self._initialized = True
 
         # Initialisation
-        self.time = 0
         self.grid = None
         self.player = None
 
+        # Clock attributes
         self.clock = pygame.time.Clock()
+        self.time = 0
         self._start_time = pygame.time.get_ticks() # Time of initial wave
         self.delta_time = self.clock.tick()
         self.in_game_timer = TIME_BETWEEN_WAVES
         self._last_second = 0 # For checking every second
+
+        # Game state attributes
+        # self.state = "None" # Can be None, Wave or Build
+        self.max_enemies = 0
+
+        # TESTING TESTING TESTING
+        self.state = "Build" # TESTING DELETE WHEN ADDING A START BUTTON 
     
     # Accessors/Mutators
     def get_player(self): return self.player
@@ -57,11 +66,26 @@ class Game:
     # Runs every second, called by tick()
     def every_second(self): 
         # Handling the in-game timer
-        self.in_game_timer = TIME_BETWEEN_WAVES - int(self.time)
+        self.in_game_timer -= 1
         if self.in_game_timer <= 0:
-            self.in_game_timer = TIME_BETWEEN_WAVES
             self._start_time = self.time
+            self.next_game_state()
 
+        # Enemy spawning 
+        if self.state == "Wave":
+            self.max_enemies += 1
+        else: self.max_enemies = 0
+
+    # Switching game states between None, Build and Game
+    def next_game_state(self): 
+        if self.state == "None" or self.state == "Wave":
+            self.state = "Build"
+            self.in_game_timer = TIME_BETWEEN_WAVES
+            self.max_enemies = 0
+        elif self.state == "Build": 
+            self.state = "Wave"
+            self.in_game_timer = TIME_DURING_WAVES
+            
     # Part of singleton pattern; allows the Game instance to be accessed easily
     @staticmethod 
     def get_instance():

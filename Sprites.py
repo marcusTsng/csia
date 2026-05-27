@@ -114,6 +114,7 @@ class Enemy(Sprite):
     def __init__(self, position):
         super().__init__(position, "Assets/base_tile.png")
         Enemy.ENEMIES.append(self)
+        self.damage = 10 # MAKE SURE TO IMPLEMENT THIS
         self._speed = 10
 
         # A* Pathfinding setup
@@ -136,6 +137,7 @@ class Enemy(Sprite):
 
     def destroy(self):
         self._navigator._destroy()
+        Enemy.ENEMIES.remove(self)
         return super().destroy()
 
     @staticmethod
@@ -143,7 +145,6 @@ class Enemy(Sprite):
         """
         SHOULD BE UPDATED TO SPAWN ON AN ACTUAL TILE
         """
-
 
         # Selecting a random position on a random edge of the map
         edge = random.randint(1,4) 
@@ -160,4 +161,10 @@ class Enemy(Sprite):
     
     @staticmethod 
     def move_enemies():
-        for x in Enemy.ENEMIES: x.move()
+        for i, x in enumerate(Enemy.ENEMIES):
+            if i >= Game.get_instance().max_enemies: x.destroy() # Delete enemies if there are too many
+            else: x.move()
+
+    @staticmethod 
+    def count_enemies():
+        return len(Enemy.ENEMIES)

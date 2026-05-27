@@ -31,9 +31,6 @@ if __name__ == "__main__":
         (255,255,255)
     )
 
-    # TESTING, REMOVE LATER!!!
-    for _ in range(5): Enemy.spawn_enemy()
-
     # Main Game Loop
     running = True
     while running:
@@ -43,8 +40,8 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT: 
                 running = False # Closing application; breaking out of game loop
             if event.type == pygame.MOUSEBUTTONDOWN: # Click handling
-                # Put a selection later
-                grid.build_wall(pygame.mouse.get_pos()) # Placing down walls at the mouse position
+                if game_manager.state == "Build":
+                    grid.build_wall(pygame.mouse.get_pos()) # Placing down walls at the mouse position
 
         # Key inputs
         keys = pygame.key.get_pressed()
@@ -53,6 +50,10 @@ if __name__ == "__main__":
         if keys[pygame.K_s]: player.move((0, player.speed))
         if keys[pygame.K_a]: player.move((-player.speed,0))
         if keys[pygame.K_d]: player.move((player.speed,0))
+
+        # Spawning enemies
+        if game_manager.state == "Wave" and Enemy.count_enemies() < game_manager.max_enemies:
+            Enemy.spawn_enemy()
 
         # Sprite handling/display
         Game.screen.fill((0,0,0))

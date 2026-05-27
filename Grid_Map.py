@@ -3,6 +3,7 @@ Map code - defines functions for the map grid, walls, placement, etc.
 """
 
 from Sprites import Sprite
+from Navigator import Navigator
 from GameManager import Game
 
 import random
