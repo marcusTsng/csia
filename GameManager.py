@@ -7,7 +7,8 @@ import pygame
 
 # Constants
 TIME_BETWEEN_WAVES = 5
-TIME_DURING_WAVES = 30
+INIT_TIME_DURING_WAVES = 20
+WAVE_TIME_INCREMENT = 5
 
 # Game Manager Singleton
 class Game:
@@ -40,6 +41,7 @@ class Game:
         self.delta_time = self.clock.tick()
         self.in_game_timer = TIME_BETWEEN_WAVES
         self._last_second = 0 # For checking every second
+        self.extra_wave_time = 0 # For increasing the length of waves
 
         # Game state attributes
         # self.state = "None" # Can be None, Wave or Build
@@ -84,7 +86,8 @@ class Game:
             self.max_enemies = 0
         elif self.state == "Build": 
             self.state = "Wave"
-            self.in_game_timer = TIME_DURING_WAVES
+            self.in_game_timer = INIT_TIME_DURING_WAVES + self.extra_wave_time
+            self.extra_wave_time += WAVE_TIME_INCREMENT
             
     # Part of singleton pattern; allows the Game instance to be accessed easily
     @staticmethod 
