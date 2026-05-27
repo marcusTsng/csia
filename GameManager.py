@@ -9,6 +9,7 @@ import pygame
 TIME_BETWEEN_WAVES = 5
 INIT_TIME_DURING_WAVES = 20
 WAVE_TIME_INCREMENT = 5
+ENEMY_SPAWN_TIME = 3
 
 # Game Manager Singleton
 class Game:
@@ -74,9 +75,10 @@ class Game:
             self.next_game_state()
 
         # Enemy spawning 
-        if self.state == "Wave":
+        if self.state != "Wave": 
+            self.max_enemies = 0
+        elif self.in_game_timer % ENEMY_SPAWN_TIME == 0: # Enemies spawn at certain time intervals
             self.max_enemies += 1
-        else: self.max_enemies = 0
 
     # Switching game states between None, Build and Game
     def next_game_state(self): 
