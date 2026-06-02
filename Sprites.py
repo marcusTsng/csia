@@ -64,6 +64,7 @@ class Player(Sprite):
     def __init__(self, game_manager):
         super().__init__((0,0), "Assets/Player/player_Idle.png")
         self.speed = PLAYER_SPEED
+        self.health = 100
 
         # For walk animations
         self._walking = False
@@ -77,6 +78,10 @@ class Player(Sprite):
         # Adding to game
         self._game = game_manager
         self._game.player = self
+
+    def deal_damage(self, dmg):
+        print("OW")
+        self.health -= dmg
 
     def move(self, position): # For player movement
         self._walking = True
@@ -114,8 +119,13 @@ class Enemy(Sprite):
     def __init__(self, position):
         super().__init__(position, "Assets/base_tile.png")
         Enemy.ENEMIES.append(self)
-        self.damage = 10 # MAKE SURE TO IMPLEMENT THIS
+        
+        self.damage = 10 
+        self._damage_time = pygame.time.get_ticks()
+
         self._speed = 10
+
+        self._player = self._game.get_player()
 
         # A* Pathfinding setup
         self._navigator = Navigator() 
@@ -134,6 +144,11 @@ class Enemy(Sprite):
         else:
             shift = pygame.math.Vector2(dx, dy).normalize() * self._speed # Normalises the vector
             super().move(shift)
+
+        # Check if colliding with the player and deal damage (if a certain amount of time has passed)
+        if self._player.rect.colliderect(self.rect) and pygame.time.get_ticks() - self._damage_time > 1000: 
+            self._damage_time = pygame.time.get_ticks()
+            self._player.deal_damage(self.damage)
 
     def destroy(self):
         self._navigator._destroy()

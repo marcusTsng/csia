@@ -24,10 +24,17 @@ if __name__ == "__main__":
     game_manager.grid = grid
     game_manager.player = player
 
+    # User interface
     timer_ui = TextOverlay(
         (game_manager.screen_width / 2, 50), 
         "0", 
         50, 
+        (255,255,255)
+    )
+    ingame_ui = TextOverlay(
+        (120, game_manager.screen_height - 50), 
+        f"Health: {player.health}%\nMoney: $100", 
+        30,
         (255,255,255)
     )
 
@@ -42,6 +49,12 @@ if __name__ == "__main__":
             if event.type == pygame.MOUSEBUTTONDOWN: # Click handling
                 if game_manager.state == "Build":
                     grid.build_wall(pygame.mouse.get_pos()) # Placing down walls at the mouse position
+
+        # Managing player health/death            
+        if player.health <= 0:
+            player.health = 0
+            game_manager.game_over()
+        ingame_ui.set_text(f"Health: {player.health}%\nMoney: $100")
 
         # Key inputs
         keys = pygame.key.get_pressed()

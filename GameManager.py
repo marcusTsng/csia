@@ -6,7 +6,7 @@ These are singletons to ensure the usage of only a single object.
 import pygame
 
 # Constants
-TIME_BETWEEN_WAVES = 5
+TIME_BETWEEN_WAVES = 3
 INIT_TIME_DURING_WAVES = 20
 WAVE_TIME_INCREMENT = 5
 ENEMY_SPAWN_TIME = 3
@@ -91,6 +91,11 @@ class Game:
             self.in_game_timer = INIT_TIME_DURING_WAVES + self.extra_wave_time
             self.extra_wave_time += WAVE_TIME_INCREMENT
             
+    # Game over
+    def game_over(self):
+        pygame.quit()
+        print("GAME OVER")
+    
     # Part of singleton pattern; allows the Game instance to be accessed easily
     @staticmethod 
     def get_instance():

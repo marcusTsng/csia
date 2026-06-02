@@ -27,6 +27,8 @@ class Navigator:
     def _calculate_route(self):
         self.clear()
         plr = Game.get_instance().get_player()
+        
+        # A* Pathfinding
         self.enqueue((plr._position[0] // 48 * 48, plr._position[1] // 48 * 48)) # Testing !!!!!!
     
     def _destroy(self):
