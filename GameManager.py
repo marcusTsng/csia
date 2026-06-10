@@ -10,6 +10,7 @@ TIME_BETWEEN_WAVES = 3
 INIT_TIME_DURING_WAVES = 20
 WAVE_TIME_INCREMENT = 5
 ENEMY_SPAWN_TIME = 3
+GRID_SIZE = 15
 
 # Game Manager Singleton
 class Game:
@@ -93,8 +94,8 @@ class Game:
             
     # Game over
     def game_over(self):
-        pygame.quit()
         print("GAME OVER")
+        pygame.quit()
     
     # Part of singleton pattern; allows the Game instance to be accessed easily
     @staticmethod 

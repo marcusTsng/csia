@@ -3,11 +3,9 @@ This script manages the main game loop, importing managers from the GameManager 
 Handles the main logic of the game, feeding inputs into managers. 
 """
 
-GRID_SIZE = 15
-
 # Imports
 import pygame
-from GameManager import Game
+from GameManager import Game, GRID_SIZE
 from Sprites import Player, Sprite, Enemy
 from UI import TextOverlay
 from Grid_Map import Grid

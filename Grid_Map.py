@@ -17,9 +17,12 @@ class Grid:
 
         game_manager.grid = self 
 
+    def get_tile_at(self, x, y):
+        return self.grid[y][x]
+
     def get_random_tile(self):
         # Outputs a random tile on the grid, ie used for enemy placement/randomised spawning
-        return self.grid[random.randint(0,self.height)][random.randint(0,self.width)]
+        return self.grid[random.randint(0,self.height - 1)][random.randint(0,self.width - 1)]
 
     def build_wall(self, pos : tuple):
         # Gets a position and converts it to an empty coordinate on the grid

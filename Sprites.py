@@ -128,7 +128,7 @@ class Enemy(Sprite):
         self._player = self._game.get_player()
 
         # A* Pathfinding setup
-        self._navigator = Navigator() 
+        self._navigator = Navigator(self) 
 
     def move(self):  # Shift the enemy slightly towards the target position, and update the target if necessary
         targ = self._navigator.front()
