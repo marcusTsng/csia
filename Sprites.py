@@ -92,6 +92,7 @@ class Player(Sprite):
         # Clamp positions so player does not leave the map
         self._position = (pygame.math.clamp(self._position[0], 0, self._game.screen_width - 48), pygame.math.clamp(self._position[1], 0, self._game.screen_height - 48))
 
+        # Tile collisions - prevent the player from walking through walls
         for x in self._game.grid.grid:
             for tile in x: 
                 if isinstance(tile, Sprite) and self.rect.colliderect(tile.rect): 
@@ -132,12 +133,13 @@ class Enemy(Sprite):
 
     def move(self):  # Shift the enemy slightly towards the target position, and update the target if necessary
         targ = self._navigator.front()
+        old_pos = self._position # stores the position of the enemy before they start moving, so it can be reverted back upon collisions
 
         # Gets the position difference
         dx, dy = targ[0] - self._position[0], targ[1] - self._position[1]
 
         # If close enough to the target, go to the next target
-        if abs(dx) < 1 and abs(dy) < 1: 
+        if abs(dx) < 2 and abs(dy) < 2: 
             self._navigator.dequeue()
         
         # Otherwise, move towards the current target
@@ -149,6 +151,12 @@ class Enemy(Sprite):
         if self._player.rect.colliderect(self.rect) and pygame.time.get_ticks() - self._damage_time > 1000: 
             self._damage_time = pygame.time.get_ticks()
             self._player.deal_damage(self.damage)
+
+        for x in self._game.grid.grid:
+            for tile in x: 
+                if isinstance(tile, Sprite) and self.rect.colliderect(tile.rect): 
+                    self._position = old_pos # Revert to old position if a collision is detected
+                    return
 
     def destroy(self):
         self._navigator._destroy()

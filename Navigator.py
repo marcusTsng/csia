@@ -27,7 +27,7 @@ def get_target():
 def is_valid(i, j): 
     if i >= 15 or j >= 15 or i < 0 or j < 0:
         return False
-    if game_manager.get_grid().get_tile_at(i, j) != None:
+    if game_manager.get_grid().grid[i][j] != None:
         return False
     return True
 
@@ -35,9 +35,9 @@ def reached_destination(i, j, target):
     return (i * 48, j * 48) == target
 
 def calculate_h_value(i, j, targ):
-    # targ = get_target()
-    targ = (int(targ[0] // 48), int(targ[1] // 48))
-    return ((i - targ[0]) ** 2 + (j - targ[1]) ** 2) ** 0.5
+    targ_x = int(targ[0] // 48)
+    targ_y = int(targ[1] // 48)
+    return ((i - targ_x) ** 2 + (j - targ_y) ** 2) ** 0.5
 
 def trace_path(cells, targ):
     path = []
@@ -74,6 +74,9 @@ class Navigator:
     def front(self): 
         if len(self._queue) == 0: 
             self._calculate_route() # Recalculate the route if empty
+
+            if len(self._queue) == 0: # In case the route is still empty, simply make a direct path towards the player
+                return get_target() 
         return self._queue[0]
     def clear(self): self._queue = []
     def dequeue(self):
@@ -134,12 +137,21 @@ class Navigator:
 
                 if is_valid(new_i, new_j) and not closed_list[new_i][new_j]:
                     
+                    # Check for diagonal movement (important later)
+                    is_diagonal = (d[0] != 0 and d[1] != 0) 
+
+                    # If moving diagonally, try not to bump into corner walls:
+                    if is_diagonal: 
+                        # Check the two straight tiles flanking this diagonal path
+                        # (i + d[0], j) is the horizontal step, (i, j + d[1]) is the vertical step
+                        if not is_valid(i + d[0], j) or not is_valid(i, j + d[1]):
+                            continue # A corner wall is blocking us! Skip this diagonal step.
+
                     # If the destination is reached, trace back the path and add cells to the queue
                     if reached_destination(new_i, new_j, target):
                         cell_details[new_i][new_j].parent_i = i
                         cell_details[new_i][new_j].parent_j = j
                         found_end = True
-                        print("Destination found")
                         
                         # Trace the path, convert from grid format to coordinates, and push to the queue
                         for cell in trace_path(cell_details, target):
@@ -152,9 +164,7 @@ class Navigator:
                         return
                     else:
                         # Check the new g,h,f values for the cell
-                        is_diagonal = (d[0] != 0 and d[1] != 0) # Diagonal cells take longer to cross
-                        g_new = cell_details[i][j].g + 1.0 if not is_diagonal else cell_details[i][j].g + 1.414
-
+                        g_new = cell_details[i][j].g + 1.0 if not is_diagonal else cell_details[i][j].g + 1.414 # Diagonal cells take longer to cross
                         h_new = calculate_h_value(new_i, new_j, target)
                         f_new = g_new + h_new
 
@@ -167,8 +177,7 @@ class Navigator:
                             cell_details[new_i][new_j].h = h_new
                             cell_details[new_i][new_j].parent_i = i
                             cell_details[new_i][new_j].parent_j = j
-        if not found_end:
-            print("DESTINATION NOT FOUND")
+        if not found_end: # Destination not found - simply walk towards the enemy
             self.enqueue(target)
 
 

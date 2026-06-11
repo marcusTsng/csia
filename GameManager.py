@@ -6,7 +6,7 @@ These are singletons to ensure the usage of only a single object.
 import pygame
 
 # Constants
-TIME_BETWEEN_WAVES = 3
+TIME_BETWEEN_WAVES = 10
 INIT_TIME_DURING_WAVES = 20
 WAVE_TIME_INCREMENT = 5
 ENEMY_SPAWN_TIME = 3
