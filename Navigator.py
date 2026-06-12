@@ -22,7 +22,10 @@ class NavCell():
 
 def get_target():
     plr = Game.get_instance().get_player()
-    return (plr._position[0] // 48 * 48, plr._position[1] // 48 * 48) 
+
+
+
+    return round(plr._position[0] / 48) * 48, round(plr._position[1] / 48) * 48
 
 def is_valid(i, j): 
     if i >= 15 or j >= 15 or i < 0 or j < 0:
@@ -86,11 +89,11 @@ class Navigator:
 
     # Calculates the fastest route to the player using A*
     def _calculate_route(self):
+        print(get_target())
         # Cooldown for recalculating routes
         if game_manager.time - self._last_calculation < COOLDOWN: return
         self._last_calculation = game_manager.time
 
-        print("Start_calculating")
         self.clear()
         plr = Game.get_instance().get_player()
         target = get_target()
@@ -126,7 +129,7 @@ class Navigator:
 
             # Find the cell with the lowest f and pop it off the open list
 
-            cell = heapq.heappop(open_list) # <--- THIS POPS THE MINIMUM F-VALUE
+            cell = heapq.heappop(open_list) # Pop the minimum f value from the heap
             i, j = int(cell[1]), int(cell[2])
             closed_list[i][j] = True
             
@@ -137,15 +140,14 @@ class Navigator:
 
                 if is_valid(new_i, new_j) and not closed_list[new_i][new_j]:
                     
-                    # Check for diagonal movement (important later)
+                    # Check for diagonal movement
                     is_diagonal = (d[0] != 0 and d[1] != 0) 
 
                     # If moving diagonally, try not to bump into corner walls:
                     if is_diagonal: 
-                        # Check the two straight tiles flanking this diagonal path
-                        # (i + d[0], j) is the horizontal step, (i, j + d[1]) is the vertical step
+                        # Check the two straight tiles flanking the diagonal path
                         if not is_valid(i + d[0], j) or not is_valid(i, j + d[1]):
-                            continue # A corner wall is blocking us! Skip this diagonal step.
+                            continue 
 
                     # If the destination is reached, trace back the path and add cells to the queue
                     if reached_destination(new_i, new_j, target):

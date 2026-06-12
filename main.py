@@ -67,7 +67,7 @@ if __name__ == "__main__":
             Enemy.spawn_enemy()
 
         # Sprite handling/display
-        Game.screen.fill((0,0,0))
+        Game.screen.fill((50,50,50))
         Enemy.move_enemies()
         timer_ui.set_text(str(game_manager.in_game_timer))
         Sprite.display_all_sprites()

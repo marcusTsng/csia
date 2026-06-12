@@ -35,9 +35,35 @@ class Sprite:
         self._position = position
         self.rect.topleft = position
 
-    def move(self, position : tuple): # Shift the sprite by a tuple position
-        self._position = (self._position[0] + position[0] * self._game.delta_time, self._position[1] + position[1] * self._game.delta_time)
+    def move(self, position : tuple, collisions=True): # Shift the sprite by a tuple position
+        # collisions controls whether or not collisions with walls are handled, set to True by default
+
+        if not collisions:
+            self._position = (self._position[0] + position[0] * self._game.delta_time, self._position[1] + position[1] * self._game.delta_time)
+            self.rect.topleft = self._position
+            return
+
+        # X and Y axis are handled seperately
+
+        old_x = self._position[0] # X AXIS
+        self._position = (self._position[0] + position[0] * self._game.delta_time, self._position[1])
+        self.rect.topleft = self._position 
+        for row in self._game.grid.grid:
+            for tile in row: 
+                if isinstance(tile, Sprite) and self.rect.colliderect(tile.rect): 
+                    self._position = (old_x, self._position[1]) 
+                    self.rect.topleft = self._position
+                    break
+
+        old_y = self._position[1] # Y AXIS
+        self._position = (self._position[0], self._position[1] + position[1] * self._game.delta_time)
         self.rect.topleft = self._position
+        for row in self._game.grid.grid:
+            for tile in row: 
+                if isinstance(tile, Sprite) and self.rect.colliderect(tile.rect): 
+                    self._position = (self._position[0], old_y)
+                    self.rect.topleft = self._position
+                    break
 
     def _display(self): # Display the sprite on the screen. Called by the display_all_sprites() static method
         Game.screen.blit(self._image, self._position)
@@ -85,19 +111,11 @@ class Player(Sprite):
 
     def move(self, position): # For player movement
         self._walking = True
-        old_pos = self._position # Stores the old position 
         
         super().move(position)
 
         # Clamp positions so player does not leave the map
         self._position = (pygame.math.clamp(self._position[0], 0, self._game.screen_width - 48), pygame.math.clamp(self._position[1], 0, self._game.screen_height - 48))
-
-        # Tile collisions - prevent the player from walking through walls
-        for x in self._game.grid.grid:
-            for tile in x: 
-                if isinstance(tile, Sprite) and self.rect.colliderect(tile.rect): 
-                    self._position = old_pos # Revert to old position if a collision is detected
-                    return
                 
         # Update navigators
         Navigator.update_all_navs()
@@ -118,7 +136,7 @@ class Enemy(Sprite):
     ENEMIES = []
 
     def __init__(self, position):
-        super().__init__(position, "Assets/base_tile.png")
+        super().__init__(position, "Assets/enemy.png")
         Enemy.ENEMIES.append(self)
         
         self.damage = 10 
@@ -133,13 +151,12 @@ class Enemy(Sprite):
 
     def move(self):  # Shift the enemy slightly towards the target position, and update the target if necessary
         targ = self._navigator.front()
-        old_pos = self._position # stores the position of the enemy before they start moving, so it can be reverted back upon collisions
 
         # Gets the position difference
         dx, dy = targ[0] - self._position[0], targ[1] - self._position[1]
 
         # If close enough to the target, go to the next target
-        if abs(dx) < 2 and abs(dy) < 2: 
+        if abs(dx) < 1 and abs(dy) < 1: 
             self._navigator.dequeue()
         
         # Otherwise, move towards the current target
@@ -151,12 +168,6 @@ class Enemy(Sprite):
         if self._player.rect.colliderect(self.rect) and pygame.time.get_ticks() - self._damage_time > 1000: 
             self._damage_time = pygame.time.get_ticks()
             self._player.deal_damage(self.damage)
-
-        for x in self._game.grid.grid:
-            for tile in x: 
-                if isinstance(tile, Sprite) and self.rect.colliderect(tile.rect): 
-                    self._position = old_pos # Revert to old position if a collision is detected
-                    return
 
     def destroy(self):
         self._navigator._destroy()
