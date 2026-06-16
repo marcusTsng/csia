@@ -89,13 +89,11 @@ class Navigator:
 
     # Calculates the fastest route to the player using A*
     def _calculate_route(self):
-        print(get_target())
         # Cooldown for recalculating routes
         if game_manager.time - self._last_calculation < COOLDOWN: return
         self._last_calculation = game_manager.time
 
         self.clear()
-        plr = Game.get_instance().get_player()
         target = get_target()
         
 
@@ -156,7 +154,8 @@ class Navigator:
                         found_end = True
                         
                         # Trace the path, convert from grid format to coordinates, and push to the queue
-                        for cell in trace_path(cell_details, target):
+                        path = trace_path(cell_details, target)
+                        for cell in path[1:]:
                             self.enqueue((cell[0] * 48, cell[1] * 48))
 
                         # In case the queue is still empty:
