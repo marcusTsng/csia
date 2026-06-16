@@ -35,6 +35,7 @@ class Game:
         # Initialisation
         self.grid = None
         self.player = None
+        self.money = 100 # Add datasave later
 
         # Clock attributes
         self.clock = pygame.time.Clock()
@@ -55,6 +56,13 @@ class Game:
     # Accessors/Mutators
     def get_player(self): return self.player
     def get_grid(self): return self.grid
+    def get_money(self): return self.money
+    
+    def purchase(self, amount): 
+        if self.money < amount: return False
+        self.money -= amount
+        return True
+    def add_money(self, money): self.money += money
 
     # Runs every frame
     def tick(self):
@@ -84,6 +92,7 @@ class Game:
     # Switching game states between None, Build and Game
     def next_game_state(self): 
         if self.state == "None" or self.state == "Wave":
+            self.add_money(100)
             self.state = "Build"
             self.in_game_timer = TIME_BETWEEN_WAVES
             self.max_enemies = 0

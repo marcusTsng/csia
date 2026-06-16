@@ -15,6 +15,7 @@ class Grid:
         self.width = width
         self.height = height
 
+        self.game_manager = game_manager
         game_manager.grid = self 
 
     def get_tile_at(self, x, y):
@@ -29,11 +30,12 @@ class Grid:
         x, y = pos[0] // 48, pos[1] // 48
         
         if self.grid[x][y]: # Delete the tile if the tile is taken
+            self.game_manager.add_money(10)
             self.destroy(x,y)
         else: # Creates a tile at the coordinate generated above
             tile = Sprite((x * 48, y * 48), "Assets/wall_tile.png")
-            if tile.rect.colliderect(Game.get_instance().player.rect): 
-                # Destroy the tile if touching the player. Prevents placement of tiles over the player.
+            if tile.rect.colliderect(Game.get_instance().player.rect) or not self.game_manager.purchase(10): 
+                # Destroy the tile if touching the player, or the player cannot afford to build a wall
                 tile.destroy()
             else:
                 self.grid[x][y] = tile

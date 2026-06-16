@@ -52,7 +52,7 @@ if __name__ == "__main__":
         if player.health <= 0:
             player.health = 0
             game_manager.game_over()
-        ingame_ui.set_text(f"Health: {player.health}%\nMoney: $100")
+        ingame_ui.set_text(f"Health: {player.health}%\nMoney: ${game_manager.money}")
 
         # Key inputs
         keys = pygame.key.get_pressed()
