@@ -2,13 +2,13 @@
 Handles the classes that define sprites and entities
 """
 
-import pygame
-import random 
+import pygame, random, threading
 from GameManager import Game
 from Navigator import Navigator
 
 # Constants
 PLAYER_SPEED = 20
+BREAK_TIME = 1 # How many seconds it takes an enemy to break a tile
 
 # General class for sprites
 class Sprite:
@@ -168,6 +168,12 @@ class Enemy(Sprite):
         if self._player.rect.colliderect(self.rect) and pygame.time.get_ticks() - self._damage_time > 1000: 
             self._damage_time = pygame.time.get_ticks()
             self._player.deal_damage(self.damage)
+
+        # Begin breaking a wall if the target cell is a wall, and the enemy is close enough
+        targ_tile = self._game.grid.get_tile_at(targ[0] // 48, targ[1] // 48)
+        if targ_tile != None:
+            if abs(dx) < 144 and abs(dy) < 144: 
+                threading.Timer(BREAK_TIME, self._game.grid.destroy, args=(targ[0] // 48, targ[1] // 48)).start()
 
     def destroy(self):
         self._navigator._destroy()

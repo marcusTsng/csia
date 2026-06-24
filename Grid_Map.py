@@ -18,6 +18,8 @@ class Grid:
         self.game_manager = game_manager
         game_manager.grid = self 
 
+        self.break_queue = []
+
     def get_tile_at(self, x, y):
         return self.grid[y][x]
 
@@ -44,5 +46,8 @@ class Grid:
         Navigator.update_all_navs()
 
     def destroy(self, x, y): # Deletes a tile from the grid
-        self.grid[x][y].destroy()
-        self.grid[x][y] = None
+        if self.grid[x][y] != None:
+            self.grid[x][y].destroy()
+            self.grid[x][y] = None
+            return True
+        return False

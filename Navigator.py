@@ -30,9 +30,14 @@ def get_target():
 def is_valid(i, j): 
     if i >= 15 or j >= 15 or i < 0 or j < 0:
         return False
-    if game_manager.get_grid().grid[i][j] != None:
-        return False
+    # if game_manager.get_grid().grid[i][j] != None:
+    #     return False
     return True
+
+def get_cost(i, j):
+    if game_manager.get_grid().grid[i][j] == None:
+        return 1
+    return 10
 
 def reached_destination(i, j, target): 
     return (i * 48, j * 48) == target
@@ -144,7 +149,7 @@ class Navigator:
                     # If moving diagonally, try not to bump into corner walls:
                     if is_diagonal: 
                         # Check the two straight tiles flanking the diagonal path
-                        if not is_valid(i + d[0], j) or not is_valid(i, j + d[1]):
+                        if is_valid(i + d[0], j) == 1 or get_cost(i, j + d[1]) == 1:
                             continue 
 
                     # If the destination is reached, trace back the path and add cells to the queue
@@ -165,7 +170,8 @@ class Navigator:
                         return
                     else:
                         # Check the new g,h,f values for the cell
-                        g_new = cell_details[i][j].g + 1.0 if not is_diagonal else cell_details[i][j].g + 1.414 # Diagonal cells take longer to cross
+                        # get_cost() is used because more expensive tiles take longer to pass
+                        g_new = cell_details[i][j].g + get_cost(i,j) if not is_diagonal else cell_details[i][j].g + 1.414 * get_cost(i,j) # Diagonal cells take longer to cross
                         h_new = calculate_h_value(new_i, new_j, target)
                         f_new = g_new + h_new
 
