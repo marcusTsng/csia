@@ -82,14 +82,16 @@ class Navigator:
     def front(self): 
         if len(self._queue) == 0: 
             self._calculate_route() # Recalculate the route if empty
-
             if len(self._queue) == 0: # In case the route is still empty, simply make a direct path towards the player
                 return get_target() 
         return self._queue[0]
+    
     def clear(self): self._queue = []
     def dequeue(self):
         if len(self._queue) == 0: 
             self._calculate_route() # Recalculate the route if empty
+            if len(self._queue) == 0: # In case the route is still empty, simply make a direct path towards the player
+                return get_target()
         return self._queue.pop(0)
 
     # Calculates the fastest route to the player using A*

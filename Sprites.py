@@ -8,13 +8,15 @@ from Navigator import Navigator
 
 # Constants
 PLAYER_SPEED = 20
+ENEMY_SPEED = 40
 BREAK_TIME = 1 # How many seconds it takes an enemy to break a tile
 
 # General class for sprites
 class Sprite:
-    SPRITES = []
-    OVERLAYS = []
-    def __init__(self, position : tuple, image_path : str = None, overlay=False):
+    SPRITES = [] # Regular sprites
+    OVERLAYS = [] # Overlay sprites
+    GAME_OVER = [] # Sprites that only appear when the game has ended
+    def __init__(self, position : tuple, image_path : str = None, overlay=False, appear_on_game_over=False):
         self._game = Game.get_instance() # For easy reference later
 
         self._position = position
@@ -25,9 +27,11 @@ class Sprite:
             self.rect = self._image.get_rect()
             self.rect.topleft = position
 
-        # Seperate sprites into regular sprites and overlays
+        
+        # Seperate sprites into regular sprites, overlays and game_over sprites
         # This allows them to be rendered seperately and ensure correct layering
-        if not overlay: Sprite.SPRITES.append(self) 
+        if appear_on_game_over: Sprite.GAME_OVER.append(self)
+        elif not overlay: Sprite.SPRITES.append(self) 
         else: Sprite.OVERLAYS.append(self)
     
     def get_pos(self): return self._position[0], self._position[1]
@@ -73,11 +77,15 @@ class Sprite:
 
     @staticmethod
     def display_all_sprites():
-        for x in Sprite.SPRITES:
-            x._display()
-        # Render overlays after sprites to ensure they are overlayed
-        for x in Sprite.OVERLAYS: 
-            x._display()
+        if Game.get_instance().state != "None":
+            for x in Sprite.SPRITES:
+                x._display()
+            # Render overlays after sprites to ensure they are overlayed
+            for x in Sprite.OVERLAYS: 
+                x._display()
+        else: # Render sprites that appear when the game is over
+            for x in Sprite.GAME_OVER:
+                x._display()
 
     @staticmethod 
     def load_image(image_path):
@@ -139,7 +147,7 @@ class Enemy(Sprite):
         super().__init__(position, "Assets/enemy.png")
         Enemy.ENEMIES.append(self)
         
-        self.damage = 10 
+        self.damage = ENEMY_SPEED
         self._damage_time = pygame.time.get_ticks()
 
         self._speed = 10
