@@ -51,3 +51,9 @@ class Grid:
             self.grid[x][y] = None
             return True
         return False
+    
+    def reset(self): # Reset the grid
+        for y in range(self.height):
+            for x in range(self.width):
+                self.destroy(x, y)
+        self.break_queue = []

@@ -63,6 +63,9 @@ if __name__ == "__main__":
                         print("Quitting application...")
                         pygame.quit()
                         print("Application quit successfully\n\n")
+                    if restart_button._is_clicked(event):
+                        player.health = 100
+                        game_manager.respawn()
         
         if game_manager.state != "None": # Only run the following while the game is active
             game_manager.tick()

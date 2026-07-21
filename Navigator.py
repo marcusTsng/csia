@@ -8,7 +8,7 @@ import heapq
 
 game_manager = Game.get_instance()
 
-COOLDOWN = 1
+COOLDOWN = 0.5
 
 # Functions and classes for A* 
 class NavCell():

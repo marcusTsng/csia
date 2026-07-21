@@ -7,9 +7,9 @@ from GameManager import Game
 from Navigator import Navigator
 
 # Constants
-PLAYER_SPEED = 20
-ENEMY_SPEED = 40
-BREAK_TIME = 1 # How many seconds it takes an enemy to break a tile
+PLAYER_SPEED = 15
+ENEMY_SPEED = 15
+BREAK_TIME = 3 # How many seconds it takes an enemy to break a tile
 
 # General class for sprites
 class Sprite:
@@ -150,7 +150,7 @@ class Enemy(Sprite):
         self.damage = ENEMY_SPEED
         self._damage_time = pygame.time.get_ticks()
 
-        self._speed = 10
+        self._speed = ENEMY_SPEED
 
         self._player = self._game.get_player()
 

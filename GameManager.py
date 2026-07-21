@@ -6,11 +6,12 @@ These are singletons to ensure the usage of only a single object.
 import pygame
 
 # Constants
-TIME_BETWEEN_WAVES = 5#45
+TIME_BETWEEN_WAVES = 30
 INIT_TIME_DURING_WAVES = 20
 WAVE_TIME_INCREMENT = 5
-ENEMY_SPAWN_TIME = 3
+ENEMY_SPAWN_TIME = 5
 GRID_SIZE = 15
+STARTING_MONEY = 200
 
 # Game Manager Singleton
 class Game:
@@ -35,7 +36,7 @@ class Game:
         # Initialisation
         self.grid = None
         self.player = None
-        self.money = 200 # Add datasave later
+        self.money = STARTING_MONEY # Add datasave later
 
         # Clock attributes
         self.clock = pygame.time.Clock()
@@ -64,6 +65,7 @@ class Game:
         self.money -= amount
         return True
     def add_money(self, money): self.money += money
+    def set_money(self, money): self.money = money
 
     # Runs every frame
     def tick(self):
@@ -106,8 +108,13 @@ class Game:
     # Game over
     def game_over(self):
         self.state = "None"
-        print("GAME OVER")
-        # pygame.quit()
+    # Respawn
+    def respawn(self):
+        self.grid.reset()
+        self.in_game_timer = TIME_BETWEEN_WAVES
+        self.wave_counter = 0
+        self.next_game_state()
+        self.set_money(STARTING_MONEY)
     
     # Part of singleton pattern; allows the Game instance to be accessed easily
     @staticmethod 
