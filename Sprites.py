@@ -9,7 +9,7 @@ from Navigator import Navigator
 # Constants
 PLAYER_SPEED = 15
 ENEMY_SPEED = 15
-BREAK_TIME = 3 # How many seconds it takes an enemy to break a tile
+BREAK_TIME = 1 # How many seconds it takes an enemy to break a tile
 
 # General class for sprites
 class Sprite:

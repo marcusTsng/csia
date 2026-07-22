@@ -22,6 +22,13 @@ if __name__ == "__main__":
     game_manager.grid = grid
     game_manager.player = player
 
+    # Background surface setup
+    bg_tile = Sprite.load_image("Assets/floor_tile.png")
+    bg_surface = pygame.Surface((720,720))
+    for y in range(0,720,48):
+        for x in range(0,720,48):
+            bg_surface.blit(bg_tile,(x,y))
+
     # User interface
     timer_ui = TextOverlay(
         (game_manager.screen_width / 2, 80), 
@@ -97,8 +104,7 @@ if __name__ == "__main__":
             # In game display
             timer_ui.set_text(str(game_manager.in_game_timer))
 
-        # Sprite handling/display
-        Game.screen.fill((10,10,10))
+        Game.screen.blit(bg_surface)
         Sprite.display_all_sprites()
         pygame.display.flip()
     pygame.quit()
