@@ -43,10 +43,7 @@ def get_user_data():
     }
 
 def save_user_data(highscore, wave_no, money, grid, health):
-    print("saving")
-    print(grid)
     if grid:
-        print("convert")
         # Convert grid into a saveable format
         save_grid = []
         for r in grid:
@@ -57,7 +54,6 @@ def save_user_data(highscore, wave_no, money, grid, health):
             save_grid.append(row)
         save_grid=json.dumps(save_grid)
     else: save_grid = grid
-    print(save_grid)
     # Check if user exits
     user_id = get_user_id()
     cursor.execute(f"SELECT * FROM USERINFO WHERE user_id = {user_id}")
@@ -68,12 +64,10 @@ def save_user_data(highscore, wave_no, money, grid, health):
             SET highscore = %s, wave_no = %s, money = %s, grid = %s, health = %s
             WHERE user_id = %s
         """
-        cursor.execute(update_query, (highscore, wave_no, money, save_grid, user_id, health))
+        cursor.execute(update_query, (highscore, wave_no, money, save_grid, health, user_id))
     else: # Insert new record if user does not exist
         query = "INSERT INTO USERINFO VALUES (%s, %s, %s, %s, %s, %s)"
         data = (user_id, highscore, wave_no, money, save_grid, health)
         
         cursor.execute(query, data)
-    print("committing")
     database.commit()
-    print("committed")

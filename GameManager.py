@@ -118,6 +118,8 @@ class Game:
         self.set_money(500)
     # Respawn
     def respawn(self):
+        self.player.health = 100
+        self.player._position = (336, 336)
         self.next_game_state()
         self.set_money(500)
     

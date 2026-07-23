@@ -73,8 +73,7 @@ if __name__ == "__main__":
                     if quit_button._is_clicked(event):
                         save_user_data(game_manager.high_score, 0, 500, None, 100)
                         pygame.quit()
-                    if restart_button._is_clicked(event):
-                        player.health = 100
+                    if restart_button._is_clicked(event):                        
                         game_manager.respawn()
         
         if game_manager.state != "None": # Only run the following while the game is active

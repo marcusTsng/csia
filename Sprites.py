@@ -96,7 +96,7 @@ class Sprite:
 # Player sprite, inherits from Sprite
 class Player(Sprite):
     def __init__(self, game_manager):
-        super().__init__((0,0), "Assets/Player/player_Idle.png")
+        super().__init__((336,336), "Assets/Player/player_Idle.png")
         self.speed = PLAYER_SPEED
         self.health = 100
 
