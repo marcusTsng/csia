@@ -10,8 +10,17 @@ import random
 
 # Full representation of the map as a grid - divided into individual tiles
 class Grid:
-    def __init__(self, game_manager, width, height):
+    def __init__(self, game_manager, width, height, grid = None):
         self.grid = [[None for _ in range(width)] for _ in range(height)]
+        # Populate the grid if one has been saved
+        if grid:
+            for i in range(len(grid)):
+                for j in range(len(grid[i])):
+                    if grid[j][i] == 1:
+                        tile = Sprite((j * 48, i * 48), "Assets/wall_tile.png")
+                        self.grid[j][i] = tile
+
+        # other setup
         self.width = width
         self.height = height
 

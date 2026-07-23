@@ -114,7 +114,6 @@ class Player(Sprite):
         self._game.player = self
 
     def deal_damage(self, dmg):
-        print("OW")
         self.health -= dmg
 
     def move(self, position): # For player movement

@@ -9,15 +9,19 @@ from GameManager import Game, GRID_SIZE
 from Sprites import Player, Sprite, Enemy
 from UI import TextOverlay, Button
 from Grid_Map import Grid
+from Datasave import save_user_data, get_user_data
 
 if __name__ == "__main__":
     # Initialisation and setup
     pygame.init()
     pygame.display.set_caption("Computer Science IA: Pathfinding Game")
 
+    saved_data = get_user_data()
+
     game_manager = Game()
-    grid = Grid(game_manager, GRID_SIZE,GRID_SIZE)
+    grid = Grid(game_manager, GRID_SIZE,GRID_SIZE, saved_data["grid"])
     player = Player(game_manager)
+    if saved_data["health"]: player.health = saved_data["health"]
 
     game_manager.grid = grid
     game_manager.player = player
@@ -67,9 +71,8 @@ if __name__ == "__main__":
                 elif game_manager.state == "None":
                     # Handling game over buttons
                     if quit_button._is_clicked(event):
-                        print("Quitting application...")
+                        save_user_data(game_manager.high_score, 0, 500, None, 100)
                         pygame.quit()
-                        print("Application quit successfully\n\n")
                     if restart_button._is_clicked(event):
                         player.health = 100
                         game_manager.respawn()
@@ -107,4 +110,6 @@ if __name__ == "__main__":
         Game.screen.blit(bg_surface)
         Sprite.display_all_sprites()
         pygame.display.flip()
+    # Save and quit after closing application
+    save_user_data(game_manager.high_score, game_manager.wave_counter, game_manager.money, game_manager.grid.grid, player.health)
     pygame.quit()
