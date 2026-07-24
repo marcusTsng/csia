@@ -5,11 +5,21 @@ Handles the classes that define sprites and entities
 import pygame, random, threading
 from GameManager import Game
 from Navigator import Navigator
+import os
+import sys
 
 # Constants
 PLAYER_SPEED = 15
 ENEMY_SPEED = 15
 BREAK_TIME = 1 # How many seconds it takes an enemy to break a tile
+
+# Function for converting a relative path into an absolute path that is compatible with PyInstaller
+def abs_asset_path(relative_path):
+    try:
+        base_path = sys._MEIPASS # PyInstaller creates a temp folder and stores path in _MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 # General class for sprites
 class Sprite:
@@ -90,7 +100,7 @@ class Sprite:
     @staticmethod 
     def load_image(image_path):
         # For loading images. Loads image from the relative path and scales to fit the screen
-        base = pygame.image.load(image_path)
+        base = pygame.image.load(abs_asset_path(image_path))
         return pygame.transform.scale_by(base, 3)
 
 # Player sprite, inherits from Sprite

@@ -4,11 +4,12 @@ Handles all the user interface and overlays, including health bars, countdowns, 
 
 #Imports
 import pygame
-from Sprites import Sprite
+from Sprites import Sprite, abs_asset_path
 from GameManager import Game
 
 # Constants
-DEFAULT_FONT_NAME = "Arial"
+DEFAULT_FONT_NAME = abs_asset_path("Assets/Fonts/determination/determination.ttf")
+TITLE_FONT_NAME = abs_asset_path("Assets/Fonts/alagard.ttf")
 
 
 class TextOverlay(Sprite): #Any text overlays onto the screen, like the countdown
@@ -20,7 +21,7 @@ class TextOverlay(Sprite): #Any text overlays onto the screen, like the countdow
         self._text = text
         self._size = size
         self._color = color
-        self._font = pygame.font.SysFont(font_name, size)
+        self._font = pygame.font.Font(font_name, size)
         self._update_surface()
 
     def _update_surface(self): 

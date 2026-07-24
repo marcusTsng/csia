@@ -18,12 +18,33 @@ def get_user_id(): # Uses MAC address as user id
     return uuid.getnode()
 
 def get_user_data():
-    user_id = get_user_id()
-    # Fetch user info using SELECT statement
-    cursor.execute(f"SELECT * FROM USERINFO WHERE user_id = {user_id}")
-    results = cursor.fetchall()
-    # Return default results if empty
-    if not results:
+    try:
+        user_id = get_user_id()
+        # Fetch user info using SELECT statement
+        cursor.execute(f"SELECT * FROM USERINFO WHERE user_id = {user_id}")
+        results = cursor.fetchall()
+        # Return default results if empty
+        if not results:
+            return {
+                "user_id" : user_id,
+                "highscore" : 0,
+                "wave_no" : 0,
+                "money" : 500,
+                "grid" : None,
+                "health" : 100
+            }
+        # Reformat results into a dictionary
+        return {
+            "user_id" : user_id,
+            "highscore" : results[0][1],
+            "wave_no" : results[0][2],
+            "money" : results[0][3],
+            "grid" : json.loads(results[0][4]),
+            "health" : results[0][5]
+        }
+    except Exception as e:
+        # Handle error in retrieving data, and instead return empty data
+        print(f"Error while fetching user data: {e}")
         return {
             "user_id" : user_id,
             "highscore" : 0,
@@ -32,15 +53,6 @@ def get_user_data():
             "grid" : None,
             "health" : 100
         }
-    # Reformat results into a dictionary
-    return {
-        "user_id" : user_id,
-        "highscore" : results[0][1],
-        "wave_no" : results[0][2],
-        "money" : results[0][3],
-        "grid" : json.loads(results[0][4]),
-        "health" : results[0][5]
-    }
 
 def save_user_data(highscore, wave_no, money, grid, health):
     if grid:

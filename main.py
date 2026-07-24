@@ -6,8 +6,8 @@ Handles the main logic of the game, feeding inputs into managers.
 # Imports
 import pygame
 from GameManager import Game, GRID_SIZE
-from Sprites import Player, Sprite, Enemy
-from UI import TextOverlay, Button
+from Sprites import Player, Sprite, Enemy, abs_asset_path
+from UI import TextOverlay, Button, TITLE_FONT_NAME
 from Grid_Map import Grid
 from Datasave import save_user_data, get_user_data
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     game_manager.player = player
 
     # Background surface setup
-    bg_tile = Sprite.load_image("Assets/floor_tile.png")
+    bg_tile = Sprite.load_image(abs_asset_path("Assets/floor_tile.png"))
     bg_surface = pygame.Surface((720,720))
     for y in range(0,720,48):
         for x in range(0,720,48):
@@ -50,13 +50,14 @@ if __name__ == "__main__":
         (game_manager.screen_width / 2, 50), 
         f"INTERMISSION", 
         50,
-        (255,255,255)
+        (255,255,255),
+        TITLE_FONT_NAME
     )
     
     # Game over interface
-    game_over_text = TextOverlay((game_manager.screen_width / 2,250), "GAME OVER", 80, (255,0,0), appear_on_game_over=True)
-    restart_button = Button((game_manager.screen_width / 2, 350), "RESTART", 50, (0,0,0), bg=(255,255,255), hover_bg=(150,150,150), appear_on_game_over=True)
-    quit_button = Button((game_manager.screen_width / 2, 420), "QUIT", 60, (0,0,0), bg=(255,255,255), hover_bg=(150,150,150), appear_on_game_over=True)
+    game_over_text = TextOverlay((game_manager.screen_width / 2,250), "GAME OVER", 80, (255,0,0), TITLE_FONT_NAME, appear_on_game_over=True)
+    restart_button = Button((game_manager.screen_width / 2, 350), "RESTART", 50, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_game_over=True)
+    quit_button = Button((game_manager.screen_width / 2, 420), "QUIT", 60, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_game_over=True)
 
     # Main Game Loop
     running = True
@@ -71,7 +72,8 @@ if __name__ == "__main__":
                 elif game_manager.state == "None":
                     # Handling game over buttons
                     if quit_button._is_clicked(event):
-                        save_user_data(game_manager.high_score, 0, 500, None, 100)
+                        game_manager.grid.reset()
+                        save_user_data(game_manager.high_score, 0, 500, game_manager.grid.grid, 100)
                         pygame.quit()
                     if restart_button._is_clicked(event):                        
                         game_manager.respawn()
