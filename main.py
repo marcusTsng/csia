@@ -22,6 +22,7 @@ if __name__ == "__main__":
     grid = Grid(game_manager, GRID_SIZE,GRID_SIZE, saved_data["grid"])
     player = Player(game_manager)
     if saved_data["health"]: player.health = saved_data["health"]
+    if saved_data["highscore"]: game_manager.high_score = saved_data["highscore"]
 
     game_manager.grid = grid
     game_manager.player = player
@@ -55,9 +56,10 @@ if __name__ == "__main__":
     )
     
     # Game over interface
-    game_over_text = TextOverlay((game_manager.screen_width / 2,250), "GAME OVER", 80, (255,0,0), TITLE_FONT_NAME, appear_on_game_over=True)
-    restart_button = Button((game_manager.screen_width / 2, 350), "RESTART", 50, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_game_over=True)
-    quit_button = Button((game_manager.screen_width / 2, 420), "QUIT", 60, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_game_over=True)
+    game_over_text = TextOverlay((game_manager.screen_width / 2,250), "GAME OVER", 100, (200,0,0), TITLE_FONT_NAME, appear_on_game_over=True)
+    high_score_text = TextOverlay((game_manager.screen_width / 2, 300), f"HIGHSCORE: Reached wave {game_manager.high_score}", 20, (255,255,255), TITLE_FONT_NAME, appear_on_game_over=True)
+    restart_button = Button((game_manager.screen_width / 2, 370), "RESTART", 50, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_game_over=True)
+    quit_button = Button((game_manager.screen_width / 2, 440), "QUIT", 50, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_game_over=True)
 
     # Main Game Loop
     running = True
@@ -84,6 +86,9 @@ if __name__ == "__main__":
             # Managing player health/death            
             if player.health <= 0:
                 player.health = 0
+                if game_manager.new_high:
+                    high_score_text.set_text(f"NEW HIGHSCORE: Wave {game_manager.high_score}")
+                else: high_score_text.set_text(f"HIGHSCORE: Wave {game_manager.high_score}")
                 game_manager.game_over()
             ingame_ui.set_text(f"Health: {player.health}%\nMoney: ${game_manager.money}")
 

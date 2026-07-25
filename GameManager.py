@@ -41,6 +41,7 @@ class Game:
         self.player = None
         self.money = data["money"]
         self.high_score = data["highscore"]
+        self.new_high = False # For checking whether the player has achieved a new highscore or not
 
         # Clock attributes
         self.clock = pygame.time.Clock()
@@ -104,9 +105,12 @@ class Game:
             self.state = "Build"
             self.in_game_timer = TIME_BETWEEN_WAVES
             self.max_enemies = 0
-        elif self.state == "Build": 
+        elif self.state == "Build": # When switching from build to wave, increment the wave
             self.state = "Wave"
             self.wave_counter += 1
+            if self.wave_counter > self.high_score: # Update highscore 
+                self.high_score = self.wave_counter
+                self.new_high = True
             self.in_game_timer = INIT_TIME_DURING_WAVES + WAVE_TIME_INCREMENT * self.wave_counter
             
     # Game over
@@ -118,6 +122,7 @@ class Game:
         self.set_money(500)
     # Respawn
     def respawn(self):
+        self.new_high = False
         self.player.health = 100
         self.player._position = (336, 336)
         self.next_game_state()
