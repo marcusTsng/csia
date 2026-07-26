@@ -10,7 +10,7 @@ import sys
 
 # Constants
 PLAYER_SPEED = 15
-ENEMY_SPEED = 15
+ENEMY_SPEED = 20
 BREAK_TIME = 1 # How many seconds it takes an enemy to break a tile
 
 # Function for converting a relative path into an absolute path that is compatible with PyInstaller
@@ -26,7 +26,8 @@ class Sprite:
     SPRITES = [] # Regular sprites
     OVERLAYS = [] # Overlay sprites
     GAME_OVER = [] # Sprites that only appear when the game has ended
-    def __init__(self, position : tuple, image_path : str = None, overlay=False, appear_on_game_over=False):
+    MENU_SCREEN = [] # Sprites that only appear on the menu screen
+    def __init__(self, position : tuple, image_path : str = None, overlay=False, appear_on_game_over=False, appear_on_menu=False):
         self._game = Game.get_instance() # For easy reference later
 
         self._position = position
@@ -41,6 +42,7 @@ class Sprite:
         # Seperate sprites into regular sprites, overlays and game_over sprites
         # This allows them to be rendered seperately and ensure correct layering
         if appear_on_game_over: Sprite.GAME_OVER.append(self)
+        elif appear_on_menu: Sprite.MENU_SCREEN.append(self)
         elif not overlay: Sprite.SPRITES.append(self) 
         else: Sprite.OVERLAYS.append(self)
     
@@ -87,14 +89,18 @@ class Sprite:
 
     @staticmethod
     def display_all_sprites():
-        if Game.get_instance().state != "None":
+        game = Game.get_instance()
+        if game.state == "Menu": # Display sprites in the menu screen
+            for x in Sprite.MENU_SCREEN:
+                x._display()
+        elif game.state == "GameOver": # Display sprites in the game over screen
+            for x in Sprite.GAME_OVER:
+                x._display()
+        else:
             for x in Sprite.SPRITES:
                 x._display()
             # Render overlays after sprites to ensure they are overlayed
             for x in Sprite.OVERLAYS: 
-                x._display()
-        else: # Render sprites that appear when the game is over
-            for x in Sprite.GAME_OVER:
                 x._display()
 
     @staticmethod 
@@ -106,7 +112,7 @@ class Sprite:
 # Player sprite, inherits from Sprite
 class Player(Sprite):
     def __init__(self, game_manager):
-        super().__init__((336,336), "Assets/Player/player_Idle.png")
+        super().__init__((336, 336), "Assets/Player/player_Idle.png")
         self.speed = PLAYER_SPEED
         self.health = 100
 
@@ -165,21 +171,26 @@ class Enemy(Sprite):
 
         # A* Pathfinding setup
         self._navigator = Navigator(self) 
+        # self.breaking = False # Keeps track of when the enemy is in the process of breaking something
 
     def move(self):  # Shift the enemy slightly towards the target position, and update the target if necessary
+        # if self.breaking: return
+
         targ = self._navigator.front()
 
         # Gets the position difference
         dx, dy = targ[0] - self._position[0], targ[1] - self._position[1]
+        
 
         # If close enough to the target, go to the next target
-        if abs(dx) < 1 and abs(dy) < 1: 
+        if abs(dx) < 3 and abs(dy) < 3: 
+            self._position = targ
             self._navigator.dequeue()
-        
         # Otherwise, move towards the current target
         else:
             shift = pygame.math.Vector2(dx, dy).normalize() * self._speed # Normalises the vector
             super().move(shift)
+        
 
         # Check if colliding with the player and deal damage (if a certain amount of time has passed)
         if self._player.rect.colliderect(self.rect) and pygame.time.get_ticks() - self._damage_time > 1000: 
@@ -189,8 +200,10 @@ class Enemy(Sprite):
         # Begin breaking a wall if the target cell is a wall, and the enemy is close enough
         targ_tile = self._game.grid.get_tile_at(targ[0] // 48, targ[1] // 48)
         if targ_tile != None:
-            if abs(dx) < 144 and abs(dy) < 144: 
-                threading.Timer(BREAK_TIME, self._game.grid.destroy, args=(targ[0] // 48, targ[1] // 48)).start()
+            # self.breaking = True
+            # if abs(dx) < 200 and abs(dy) < 200: 
+            #     print("BREAK")
+            threading.Timer(BREAK_TIME, self._game.grid.destroy, args=(targ[0] // 48, targ[1] // 48)).start()
 
     def destroy(self):
         self._navigator._destroy()

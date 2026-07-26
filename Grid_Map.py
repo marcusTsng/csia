@@ -16,7 +16,8 @@ class Grid:
         if grid:
             for i in range(len(grid)):
                 for j in range(len(grid[i])):
-                    if grid[j][i] == 1:
+                    # Grid is saved as 2D array of 1s and 0s, load tiles onto 1s
+                    if grid[j][i] == 1 and not (i == j == 7):  # Ignore centre tile, as that is where the player spawns
                         tile = Sprite((j * 48, i * 48), "Assets/wall_tile.png")
                         self.grid[j][i] = tile
 
@@ -26,8 +27,6 @@ class Grid:
 
         self.game_manager = game_manager
         game_manager.grid = self 
-
-        self.break_queue = []
 
     def get_tile_at(self, x, y):
         return self.grid[y][x]
@@ -54,6 +53,12 @@ class Grid:
         # Update navigators
         Navigator.update_all_navs()
 
+    def is_empty(self): # Returns True if the grid is empty
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[i])):
+                if self.grid[j][i] != None: return False
+        return True
+
     def destroy(self, x, y): # Deletes a tile from the grid
         if self.grid[x][y] != None:
             self.grid[x][y].destroy()
@@ -65,4 +70,3 @@ class Grid:
         for y in range(self.height):
             for x in range(self.width):
                 self.destroy(x, y)
-        self.break_queue = []

@@ -6,6 +6,17 @@ import mysql.connector
 import uuid
 import json
 
+# Default data for empty records
+default = {
+    "user_id" : None, # will be set later
+    "highscore" : 0,
+    "wave_no" : 0,
+    "money" : 500,
+    "grid" : None,
+    "health" : 100,
+    "contains_data" : False # indicator of whether data has actually been previously saved or not
+}
+
 try:
     database = mysql.connector.connect(
     host="127.0.0.1",
@@ -29,34 +40,28 @@ def get_user_data():
         results = cursor.fetchall()
         # Return default results if empty
         if not results:
-            return {
-                "user_id" : user_id,
-                "highscore" : 0,
-                "wave_no" : 0,
-                "money" : 500,
-                "grid" : None,
-                "health" : 100
-            }
+            default["user_id"] = user_id
+            return default
+        
         # Reformat results into a dictionary
-        return {
+        user_data = {
             "user_id" : user_id,
             "highscore" : results[0][1],
             "wave_no" : results[0][2],
             "money" : results[0][3],
             "grid" : json.loads(results[0][4]),
-            "health" : results[0][5]
+            "health" : results[0][5],
+            "contains_data" : True
         }
+        # If data matches default values, mark as empty (excluding highscore)
+        if user_data["wave_no"] == 0 and user_data["health"] == 100 and (user_data["grid"] == None or not any(1 in row for row in user_data["grid"])):
+            user_data["contains_data"] = False
+        return user_data
     except Exception as e:
         # Handle error in retrieving data, and instead return empty data
         print(f"Error while fetching user data: {e}")
-        return {
-            "user_id" : user_id,
-            "highscore" : 0,
-            "wave_no" : 0,
-            "money" : 500,
-            "grid" : None,
-            "health" : 100
-        }
+        default["user_id"] = user_id
+        return default
 
 def save_user_data(highscore, wave_no, money, grid, health):
     try:

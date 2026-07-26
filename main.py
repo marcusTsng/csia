@@ -19,13 +19,16 @@ if __name__ == "__main__":
     saved_data = get_user_data()
 
     game_manager = Game()
-    grid = Grid(game_manager, GRID_SIZE,GRID_SIZE, saved_data["grid"])
-    player = Player(game_manager)
-    if saved_data["health"]: player.health = saved_data["health"]
-    if saved_data["highscore"]: game_manager.high_score = saved_data["highscore"]
 
+    grid = Grid(game_manager, GRID_SIZE,GRID_SIZE, saved_data["grid"])
     game_manager.grid = grid
+
+    player = Player(game_manager)
     game_manager.player = player
+
+    if saved_data["contains_data"]:
+        if saved_data["health"]: player.health = saved_data["health"]
+        if saved_data["highscore"]: game_manager.high_score = saved_data["highscore"]
 
     # Background surface setup
     bg_tile = Sprite.load_image(abs_asset_path("Assets/floor_tile.png"))
@@ -55,6 +58,12 @@ if __name__ == "__main__":
         TITLE_FONT_NAME
     )
     
+    # Menu screen interface
+    title_text = TextOverlay((game_manager.screen_width / 2,250), "TITLE HERE", 110, (0,0,0), TITLE_FONT_NAME, appear_on_menu=True)
+    new_game_button = Button((game_manager.screen_width / 2, 350), "NEW GAME", 40, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_menu=True)
+    if saved_data["contains_data"]:
+        load_session_button = Button((game_manager.screen_width / 2, 400), "LOAD GAME", 40, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_menu=True)
+
     # Game over interface
     game_over_text = TextOverlay((game_manager.screen_width / 2,250), "GAME OVER", 100, (200,0,0), TITLE_FONT_NAME, appear_on_game_over=True)
     high_score_text = TextOverlay((game_manager.screen_width / 2, 300), f"HIGHSCORE: Reached wave {game_manager.high_score}", 20, (255,255,255), TITLE_FONT_NAME, appear_on_game_over=True)
@@ -71,16 +80,20 @@ if __name__ == "__main__":
             if event.type == pygame.MOUSEBUTTONDOWN: # Click handling
                 if game_manager.state == "Build":
                     grid.build_wall(pygame.mouse.get_pos()) # Placing down walls at the mouse position
-                elif game_manager.state == "None":
-                    # Handling game over buttons
+                elif game_manager.state == "GameOver": # Handling game over buttons
                     if quit_button._is_clicked(event):
                         game_manager.grid.reset()
                         save_user_data(game_manager.high_score, 0, 500, game_manager.grid.grid, 100)
                         pygame.quit()
-                    if restart_button._is_clicked(event):                        
-                        game_manager.respawn()
+                    if restart_button._is_clicked(event):                      
+                        game_manager.new_game()
+                elif game_manager.state == "Menu": # Handling menu buttons
+                    if new_game_button._is_clicked(event):
+                        game_manager.new_game()
+                    if saved_data["contains_data"] and load_session_button._is_clicked(event):
+                        game_manager.next_game_state() # No need to run anything special, simply switch the game state as everything has been loaded in already
         
-        if game_manager.state != "None": # Only run the following while the game is active
+        if game_manager.state != "GameOver" and game_manager.state != "Menu": # Only run the following while the game is active
             game_manager.tick()
 
             # Managing player health/death            

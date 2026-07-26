@@ -54,11 +54,10 @@ class Game:
         # self.extra_wave_time = 0 # For increasing the length of waves
 
         # Game state attributes
-        # self.state = "None" # Can be None, Wave or Build
         self.max_enemies = 0
 
-        # TESTING TESTING TESTING
-        self.state = "Build" # TESTING DELETE WHEN ADDING A START BUTTON 
+        self.state = "Menu"  # Can be Menu, Build, Wave, or GameOver
+        self.menu = True
     
     # Accessors/Mutators
     def get_player(self): return self.player
@@ -100,8 +99,12 @@ class Game:
 
     # Switching game states between None, Build and Game
     def next_game_state(self): 
-        if self.state == "None" or self.state == "Wave":
+        if self.state == "Wave":
             self.add_money(100)
+            self.state = "Build"
+            self.in_game_timer = TIME_BETWEEN_WAVES
+            self.max_enemies = 0
+        elif self.state == "Menu" or self.state == "GameOver":
             self.state = "Build"
             self.in_game_timer = TIME_BETWEEN_WAVES
             self.max_enemies = 0
@@ -113,20 +116,24 @@ class Game:
                 self.new_high = True
             self.in_game_timer = INIT_TIME_DURING_WAVES + WAVE_TIME_INCREMENT * self.wave_counter
             
-    # Game over
-    def game_over(self):
+    # Reset game
+    def reset_game(self):
         self.grid.reset()
         self.in_game_timer = TIME_BETWEEN_WAVES
         self.wave_counter = 0
-        self.state = "None"
-        self.set_money(500)
-    # Respawn
-    def respawn(self):
         self.new_high = False
         self.player.health = 100
         self.player._position = (336, 336)
-        self.next_game_state()
         self.set_money(500)
+    # Game over
+    def game_over(self):
+        self.reset_game()
+        self.state = "GameOver"
+    # Respawn/Spawn the player into a new game
+    def new_game(self):
+        self.reset_game()
+        self.set_money(500)
+        self.next_game_state()
     
     # Part of singleton pattern; allows the Game instance to be accessed easily
     @staticmethod 

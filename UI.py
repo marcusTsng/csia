@@ -13,8 +13,8 @@ TITLE_FONT_NAME = abs_asset_path("Assets/Fonts/alagard.ttf")
 
 
 class TextOverlay(Sprite): #Any text overlays onto the screen, like the countdown
-    def __init__(self, position : tuple, text : str,  size : int, color : tuple, font_name : str = DEFAULT_FONT_NAME, appear_on_game_over=False):
-        super().__init__(position, overlay=True, appear_on_game_over=appear_on_game_over)
+    def __init__(self, position : tuple, text : str,  size : int, color : tuple, font_name : str = DEFAULT_FONT_NAME, appear_on_game_over=False, appear_on_menu=False):
+        super().__init__(position, overlay=True, appear_on_game_over=appear_on_game_over, appear_on_menu=appear_on_menu)
 
         self._game = Game.get_instance()
 
@@ -46,7 +46,7 @@ class TextOverlay(Sprite): #Any text overlays onto the screen, like the countdow
         Game.screen.blit(self._surface, self._rect)
 
 class Button(TextOverlay):
-    def __init__(self, position, text, size, color, font_name = DEFAULT_FONT_NAME, bg = None, hover_bg = None, hover_color = None, appear_on_game_over=False):
+    def __init__(self, position, text, size, color, font_name = DEFAULT_FONT_NAME, bg = None, hover_bg = None, hover_color = None, appear_on_game_over=False, appear_on_menu=False):
 
         # Set defaults for hover colors
         if hover_bg == None: hover_bg = bg
@@ -56,7 +56,7 @@ class Button(TextOverlay):
         self._hover_bg_color = hover_bg
         self._hover_color = hover_color
 
-        super().__init__(position, text, size, color, font_name, appear_on_game_over=appear_on_game_over)
+        super().__init__(position, text, size, color, font_name, appear_on_game_over=appear_on_game_over, appear_on_menu=appear_on_menu)
         self._update_surface()
     
     def _update_surface(self): 

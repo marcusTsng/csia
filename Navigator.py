@@ -22,22 +22,17 @@ class NavCell():
 
 def get_target():
     plr = Game.get_instance().get_player()
-
-
-
     return round(plr._position[0] / 48) * 48, round(plr._position[1] / 48) * 48
 
 def is_valid(i, j): 
     if i >= 15 or j >= 15 or i < 0 or j < 0:
         return False
-    # if game_manager.get_grid().grid[i][j] != None:
-    #     return False
     return True
 
 def get_cost(i, j):
     if game_manager.get_grid().grid[i][j] == None:
         return 1
-    return 10
+    return 30 # Higher cost for tiles that have to be broken
 
 def reached_destination(i, j, target): 
     return (i * 48, j * 48) == target
