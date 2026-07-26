@@ -8,8 +8,8 @@ from Sprites import Sprite, abs_asset_path
 from GameManager import Game
 
 # Constants
-DEFAULT_FONT_NAME = abs_asset_path("Assets/Fonts/determination/determination.ttf")
-TITLE_FONT_NAME = abs_asset_path("Assets/Fonts/alagard.ttf")
+DEFAULT_FONT_NAME = abs_asset_path("assets/Fonts/determination/determination.ttf")
+TITLE_FONT_NAME = abs_asset_path("assets/Fonts/alagard.ttf")
 
 
 class TextOverlay(Sprite): #Any text overlays onto the screen, like the countdown
