@@ -10,7 +10,8 @@ import sys
 
 # Constants
 PLAYER_SPEED = 15
-ENEMY_SPEED = 20
+ENEMY_SPEED = 15
+ENEMY_DAMAGE = 5
 BREAK_TIME = 1 # How many seconds it takes an enemy to break a tile
 
 # Function for converting a relative path into an absolute path that is compatible with PyInstaller
@@ -112,7 +113,7 @@ class Sprite:
 # Player sprite, inherits from Sprite
 class Player(Sprite):
     def __init__(self, game_manager):
-        super().__init__((336, 336), "Assets/Player/player_Idle.png")
+        super().__init__((336, 336), "assets/Player/player_Idle.png")
         self.speed = PLAYER_SPEED
         self.health = 100
 
@@ -122,8 +123,8 @@ class Player(Sprite):
         self._current_frame_i = 1
 
         # Animation loading
-        self._walk1 = Sprite.load_image("Assets/Player/player_Walk1.png")
-        self._walk2 = Sprite.load_image("Assets/Player/player_Walk2.png")
+        self._walk1 = Sprite.load_image("assets/Player/player_Walk1.png")
+        self._walk2 = Sprite.load_image("assets/Player/player_Walk2.png")
 
         # Adding to game
         self._game = game_manager
@@ -159,10 +160,10 @@ class Enemy(Sprite):
     ENEMIES = []
 
     def __init__(self, position):
-        super().__init__(position, "Assets/enemy.png")
+        super().__init__(position, "assets/enemy.png")
         Enemy.ENEMIES.append(self)
         
-        self.damage = ENEMY_SPEED
+        self.damage = ENEMY_DAMAGE
         self._damage_time = pygame.time.get_ticks()
 
         self._speed = ENEMY_SPEED

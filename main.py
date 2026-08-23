@@ -31,7 +31,7 @@ if __name__ == "__main__":
         if saved_data["highscore"]: game_manager.high_score = saved_data["highscore"]
 
     # Background surface setup
-    bg_tile = Sprite.load_image(abs_asset_path("Assets/floor_tile.png"))
+    bg_tile = Sprite.load_image(abs_asset_path("assets/floor_tile.png"))
     bg_surface = pygame.Surface((720,720))
     for y in range(0,720,48):
         for x in range(0,720,48):
@@ -113,10 +113,13 @@ if __name__ == "__main__":
             # Key inputs
             keys = pygame.key.get_pressed()
             # Player movement
-            if keys[pygame.K_w]: player.move((0, -player.speed))
-            if keys[pygame.K_s]: player.move((0, player.speed))
-            if keys[pygame.K_a]: player.move((-player.speed,0))
-            if keys[pygame.K_d]: player.move((player.speed,0))
+            multiplier = 1 # for amending diagonal movement speed
+            if (keys[pygame.K_a] and (keys[pygame.K_w] or keys[pygame.K_s])) or (keys[pygame.K_d] and (keys[pygame.K_w] or keys[pygame.K_s])): 
+                multiplier = 0.7
+            if keys[pygame.K_w]: player.move((0, -player.speed * multiplier))
+            if keys[pygame.K_s]: player.move((0, player.speed * multiplier))
+            if keys[pygame.K_a]: player.move((-player.speed * multiplier,0))
+            if keys[pygame.K_d]: player.move((player.speed * multiplier,0))
 
             # Spawning enemies
             if game_manager.state == "Wave" and Enemy.count_enemies() < game_manager.max_enemies:

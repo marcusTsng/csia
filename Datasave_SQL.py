@@ -1,6 +1,5 @@
 """
-Handles read and write operations for datasave. 
-Persistent data is stored locally in a .txt file, which can be read and written
+Handles read and write operations for datasave, and acts as the middle man between Python and the MySQL database
 """
 
 import mysql.connector

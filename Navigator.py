@@ -9,6 +9,7 @@ import heapq
 game_manager = Game.get_instance()
 
 COOLDOWN = 0.5
+COST_OF_WALLS = 100
 
 # Functions and classes for A* 
 class NavCell():
@@ -32,7 +33,7 @@ def is_valid(i, j):
 def get_cost(i, j):
     if game_manager.get_grid().grid[i][j] == None:
         return 1
-    return 30 # Higher cost for tiles that have to be broken
+    return COST_OF_WALLS # Higher cost for tiles that have to be broken
 
 def reached_destination(i, j, target): 
     return (i * 48, j * 48) == target
@@ -168,7 +169,7 @@ class Navigator:
                     else:
                         # Check the new g,h,f values for the cell
                         # get_cost() is used because more expensive tiles take longer to pass
-                        g_new = cell_details[i][j].g + get_cost(i,j) if not is_diagonal else cell_details[i][j].g + 1.414 * get_cost(i,j) # Diagonal cells take longer to cross
+                        g_new = cell_details[i][j].g + get_cost(i,j) 
                         h_new = calculate_h_value(new_i, new_j, target)
                         f_new = g_new + h_new
 
@@ -183,10 +184,6 @@ class Navigator:
                             cell_details[new_i][new_j].parent_j = j
         if not found_end: # Destination not found - simply walk towards the enemy
             self.enqueue(target)
-
-
-
-
     
     def _destroy(self):
         Navigator.NAVIGATORS.remove(self)
