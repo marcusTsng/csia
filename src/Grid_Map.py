@@ -16,9 +16,9 @@ class Grid:
         if grid:
             for i in range(len(grid)):
                 for j in range(len(grid[i])):
-                    # Grid is saved as 2D array of 1s and 0s, load tiles onto 1s
+                    # Grid is saved as 2d array of 1s and 0s, load tiles onto 1s
                     if grid[j][i] == 1 and not (i == j == 7):  # Ignore centre tile, as that is where the player spawns
-                        tile = Sprite((j * 48, i * 48), "Assets/wall_tile.png")
+                        tile = Sprite((j * 48, i * 48), "src/assets/wall_tile.png")
                         self.grid[j][i] = tile
 
         # other setup
@@ -43,7 +43,7 @@ class Grid:
             self.game_manager.add_money(10)
             self.destroy(x,y)
         else: # Creates a tile at the coordinate generated above
-            tile = Sprite((x * 48, y * 48), abs_asset_path("Assets/wall_tile.png"))
+            tile = Sprite((x * 48, y * 48), abs_asset_path("src/assets/wall_tile.png"))
             if tile.rect.colliderect(Game.get_instance().player.rect) or (x == 0 or x == 14 or y == 0 or y == 14) or not self.game_manager.purchase(10): 
                 # Destroy the tile if touching the player, or the player cannot afford to build a wall, or if the tile is on the edge
                 tile.destroy()

@@ -9,7 +9,7 @@ from GameManager import Game, GRID_SIZE
 from Sprites import Player, Sprite, Enemy, abs_asset_path
 from UI import TextOverlay, Button, TITLE_FONT_NAME
 from Grid_Map import Grid
-from Datasave_SQL import save_user_data, get_user_data
+from Datasave import save_user_data, get_user_data
 
 if __name__ == "__main__":
     # Initialisation and setup
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         if saved_data["highscore"]: game_manager.high_score = saved_data["highscore"]
 
     # Background surface setup
-    bg_tile = Sprite.load_image(abs_asset_path("assets/floor_tile.png"))
+    bg_tile = Sprite.load_image(abs_asset_path("src/assets/floor_tile.png"))
     bg_surface = pygame.Surface((720,720))
     for y in range(0,720,48):
         for x in range(0,720,48):
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     )
     
     # Menu screen interface
-    title_text = TextOverlay((game_manager.screen_width / 2,250), "TITLE HERE", 110, (0,0,0), TITLE_FONT_NAME, appear_on_menu=True)
+    title_text = TextOverlay((game_manager.screen_width / 2,250), "BARRICADE", 110, (0,0,0), TITLE_FONT_NAME, appear_on_menu=True)
     new_game_button = Button((game_manager.screen_width / 2, 350), "NEW GAME", 40, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_menu=True)
     if saved_data["contains_data"]:
         load_session_button = Button((game_manager.screen_width / 2, 400), "LOAD GAME", 40, (0,0,0), TITLE_FONT_NAME, bg=(255,255,255), hover_bg=(150,150,150), appear_on_menu=True)

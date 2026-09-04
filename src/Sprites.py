@@ -113,7 +113,7 @@ class Sprite:
 # Player sprite, inherits from Sprite
 class Player(Sprite):
     def __init__(self, game_manager):
-        super().__init__((336, 336), "assets/Player/player_Idle.png")
+        super().__init__((336, 336), "src/assets/Player/player_Idle.png")
         self.speed = PLAYER_SPEED
         self.health = 100
 
@@ -123,8 +123,8 @@ class Player(Sprite):
         self._current_frame_i = 1
 
         # Animation loading
-        self._walk1 = Sprite.load_image("assets/Player/player_Walk1.png")
-        self._walk2 = Sprite.load_image("assets/Player/player_Walk2.png")
+        self._walk1 = Sprite.load_image("src/assets/Player/player_Walk1.png")
+        self._walk2 = Sprite.load_image("src/assets/Player/player_Walk2.png")
 
         # Adding to game
         self._game = game_manager
@@ -160,7 +160,7 @@ class Enemy(Sprite):
     ENEMIES = []
 
     def __init__(self, position):
-        super().__init__(position, "assets/enemy.png")
+        super().__init__(position, "src/assets/enemy.png")
         Enemy.ENEMIES.append(self)
         
         self.damage = ENEMY_DAMAGE
