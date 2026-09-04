@@ -39,7 +39,6 @@ def get_user_data():
                 return default
 
             for i, line in enumerate(lines):
-                print(i, line)
                 if i == 0: data["highscore"] = int(line)
                 if i == 1: data["wave_no"] = int(line)
                 if i == 2: data["money"] = int(line)
