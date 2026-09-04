@@ -9,7 +9,7 @@ from GameManager import Game, GRID_SIZE
 from Sprites import Player, Sprite, Enemy, abs_asset_path
 from UI import TextOverlay, Button, TITLE_FONT_NAME
 from Grid_Map import Grid
-from Datasave import save_user_data, get_user_data
+from Datasave_SQL import save_user_data, get_user_data
 
 if __name__ == "__main__":
     # Initialisation and setup
