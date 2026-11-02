@@ -140,7 +140,8 @@ class Player(Sprite):
         super().move(position)
 
         # Clamp positions so player does not leave the map
-        self._position = (pygame.math.clamp(self._position[0], 0, self._game.screen_width - 48), pygame.math.clamp(self._position[1], 0, self._game.screen_height - 48))
+        self._position = (pygame.math.clamp(self._position[0], 0, self._game.screen_width - 48), 
+                          pygame.math.clamp(self._position[1], 0, self._game.screen_height - 48))
                 
         # Update navigators
         Navigator.update_all_navs()
