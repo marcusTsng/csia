@@ -115,8 +115,8 @@ class Sprite:
 class Player(Sprite):
     def __init__(self, game_manager):
         super().__init__((336, 336), "src/assets/Player/player_Idle.png")
-        self.speed = PLAYER_SPEED
-        self.health = 100
+        self._speed = PLAYER_SPEED
+        self._health = 100
 
         # For walk animations
         self._walking = False
@@ -131,8 +131,13 @@ class Player(Sprite):
         self._game = game_manager
         self._game.player = self
 
+    def set_health(self, health): self._health = health
+    def get_health(self): return self._health
+    def set_speed(self, speed): self._speed = speed
+    def get_speed(self): return self._speed
+
     def deal_damage(self, dmg):
-        self.health -= dmg
+        self._health -= dmg
 
     def move(self, position): # For player movement
         self._walking = True
@@ -165,10 +170,9 @@ class Enemy(Sprite):
         super().__init__(position, "src/assets/enemy.png")
         Enemy.ENEMIES.append(self)
         
-        self.damage = ENEMY_DAMAGE
+        self._damage = ENEMY_DAMAGE
+        self._speed= ENEMY_SPEED
         self._damage_time = pygame.time.get_ticks()
-
-        self._speed = ENEMY_SPEED
 
         self._player = self._game.get_player()
 

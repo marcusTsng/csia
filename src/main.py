@@ -116,10 +116,10 @@ if __name__ == "__main__":
             multiplier = 1 # for amending diagonal movement speed
             if (keys[pygame.K_a] and (keys[pygame.K_w] or keys[pygame.K_s])) or (keys[pygame.K_d] and (keys[pygame.K_w] or keys[pygame.K_s])): 
                 multiplier = 0.7
-            if keys[pygame.K_w]: player.move((0, -player.speed * multiplier))
-            if keys[pygame.K_s]: player.move((0, player.speed * multiplier))
-            if keys[pygame.K_a]: player.move((-player.speed * multiplier,0))
-            if keys[pygame.K_d]: player.move((player.speed * multiplier,0))
+            if keys[pygame.K_w]: player.move((0, -player.get_speed() * multiplier))
+            if keys[pygame.K_s]: player.move((0, player.get_speed() * multiplier))
+            if keys[pygame.K_a]: player.move((-player.get_speed() * multiplier,0))
+            if keys[pygame.K_d]: player.move((player.get_speed() * multiplier,0))
 
             # Spawning enemies
             if game_manager.state == "Wave" and Enemy.count_enemies() < game_manager.max_enemies:
