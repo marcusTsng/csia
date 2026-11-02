@@ -11,7 +11,7 @@ import sys
 # Constants
 PLAYER_SPEED = 15
 ENEMY_SPEED = 15
-ENEMY_DAMAGE = 5
+ENEMY_DAMAGE = 5 # How much damage the enemy deals
 BREAK_TIME = 1 # How many seconds it takes an enemy to break a tile
 
 # Function for converting a relative path into an absolute path that is compatible with PyInstaller
@@ -87,6 +87,7 @@ class Sprite:
 
     def destroy(self): # Deletes a sprite from existence 
         Sprite.SPRITES.remove(self)
+        del self
 
     @staticmethod
     def display_all_sprites():
