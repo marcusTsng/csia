@@ -202,7 +202,7 @@ class Enemy(Sprite):
         # Check if colliding with the player and deal damage (if a certain amount of time has passed)
         if self._player.rect.colliderect(self.rect) and pygame.time.get_ticks() - self._damage_time > 1000: 
             self._damage_time = pygame.time.get_ticks()
-            self._player.deal_damage(self.damage)
+            self._player.deal_damage(self._damage)
 
         # Begin breaking a wall if the target cell is a wall, and the enemy is close enough
         targ_tile = self._game.grid.get_tile_at(targ[0] // 48, targ[1] // 48)
@@ -219,10 +219,6 @@ class Enemy(Sprite):
 
     @staticmethod
     def spawn_enemy(): 
-        """
-        SHOULD BE UPDATED TO SPAWN ON AN ACTUAL TILE
-        """
-
         # Selecting a random position on a random edge of the map
         edge = random.randint(1,4) 
         if edge == 1: pos = (random.randint(0, Game.screen_width - 48),0)
