@@ -178,7 +178,6 @@ class Enemy(Sprite):
 
         # A* Pathfinding setup
         self._navigator = Navigator(self) 
-        # self.breaking = False # Keeps track of when the enemy is in the process of breaking something
 
     def move(self):  # Shift the enemy slightly towards the target position, and update the target if necessary
         # if self.breaking: return
@@ -228,8 +227,6 @@ class Enemy(Sprite):
 
         # Creating an enemy
         enemy = Enemy(pos)
-
-        # Handling stuff with the enemy
         return enemy
     
     @staticmethod 
