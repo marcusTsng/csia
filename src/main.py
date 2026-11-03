@@ -81,16 +81,16 @@ if __name__ == "__main__":
                 if game_manager.state == "Build":
                     grid.build_wall(pygame.mouse.get_pos()) # Placing down walls at the mouse position
                 elif game_manager.state == "GameOver": # Handling game over buttons
-                    if quit_button._is_clicked(event):
+                    if quit_button.is_clicked(event):
                         game_manager.grid.reset()
                         save_user_data(game_manager.high_score, 0, 500, game_manager.grid.grid, 100)
                         pygame.quit()
-                    if restart_button._is_clicked(event):                      
+                    if restart_button.is_clicked(event):                      
                         game_manager.new_game()
                 elif game_manager.state == "Menu": # Handling menu buttons
-                    if new_game_button._is_clicked(event):
+                    if new_game_button.is_clicked(event):
                         game_manager.new_game()
-                    if saved_data["contains_data"] and load_session_button._is_clicked(event):
+                    if saved_data["contains_data"] and load_session_button.is_clicked(event):
                         game_manager.next_game_state() # No need to run anything special, simply switch the game state as everything has been loaded in already
         
         if game_manager.state != "GameOver" and game_manager.state != "Menu": # Only run the following while the game is active

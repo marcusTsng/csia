@@ -46,7 +46,8 @@ class TextOverlay(Sprite): #Any text overlays onto the screen, like the countdow
         Game.screen.blit(self._surface, self._rect)
 
 class Button(TextOverlay):
-    def __init__(self, position, text, size, color, font_name = DEFAULT_FONT_NAME, bg = None, hover_bg = None, hover_color = None, appear_on_game_over=False, appear_on_menu=False):
+    def __init__(self, position, text, size, color, font_name = DEFAULT_FONT_NAME, bg = None, hover_bg = None, 
+                 hover_color = None, appear_on_game_over=False, appear_on_menu=False):
 
         # Set defaults for hover colors
         if hover_bg == None: hover_bg = bg
@@ -72,7 +73,7 @@ class Button(TextOverlay):
     def _is_hovering(self): # Check whether the mouse is hovering over the button
         return self._rect.collidepoint(pygame.mouse.get_pos())
     
-    def _is_clicked(self, event):
+    def is_clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self._rect.collidepoint(event.pos):
                 return True
